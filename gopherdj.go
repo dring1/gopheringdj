@@ -8,7 +8,7 @@ import (
 
 	"github.com/codegangsta/negroni"
 	_ "github.com/darkhelmet/twitterstream"
-	_ "github.com/dring1/gopheringdj/lib"
+	"github.com/dring1/gopheringdj/lib"
 	"github.com/gorilla/mux"
 )
 
@@ -34,6 +34,10 @@ func main() {
 	n.UseHandler(r)
 	fmt.Printf("Listening on port: %s: ", PORT)
 	http.ListenAndServe(":"+PORT, n)
+
+	// At this point the init from DB has been called and bolt instantiated
+	// we remeber to defer the close
+	defer lib.DB.Close()
 }
 
 func Hello(w http.ResponseWriter, req *http.Request) {

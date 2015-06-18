@@ -31,18 +31,14 @@ type Submission struct {
 	FullID       string  `json:"name"`
 	ID           string  `json:"id"`
 	Permalink    string  `json:"permalink"`
-	Selftext     string  `json:"selftext"`
 	ThumbnailURL string  `json:"thumbnail"`
 	DateCreated  float32 `json:"created_utc"`
 	NumComments  int     `json:"num_comments"`
 	Score        int     `json:"score"`
 	Ups          int     `json:"ups"`
 	Downs        int     `json:"downs"`
-	IsNSFW       bool    `json:"over_18"`
 	IsSelf       bool    `json:"is_self"`
-	WasClicked   bool    `json:"clicked"`
 	IsSaved      bool    `json:"saved"`
-	BannedBy     *string `json:"banned_by"`
 }
 
 type Options map[string]string
