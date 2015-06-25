@@ -3,11 +3,23 @@ package lib
 import (
 	"encoding/json"
 	"fmt"
+	"log"
 	"net/http"
+	"os"
 	"strings"
+	"time"
+
+	"github.com/mgutz/ansi"
 )
 
-var AllowedDomains = [...]string{"youtube.com", "youtu.be", "soundcloud.com"}
+var (
+	AllowedDomains = [...]string{"youtube.com", "youtu.be", "soundcloud.com"}
+	Info           *log.Logger
+)
+
+func init() {
+	Info = log.New(os.Stdout, "INFO: ", log.Ldate|log.Ltime|log.Lshortfile)
+}
 
 const (
 	BASE = "https://www.reddit.com"
@@ -108,4 +120,34 @@ func (s *Submission) ValidDomain() bool {
 		}
 	}
 	return valid
+}
+
+func fetch(subreddit string, popularity string) error {
+	magenta := ansi.ColorFunc("magenta+")
+	Info.Println(magenta("%v ▶ info ******* \n"), time.Now())
+	submissions, err := GetSubReddit(subreddit, popularity, nil)
+	if err != nil {
+		return err
+	}
+
+	filteredSubs := FilterLinksByAllowedDomain(submissions)
+	_, err = InsertNewSubmissions(filteredSubs)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func ContinuousPoll(subreddit string, popularity string, interval time.Duration) {
+	magenta := ansi.ColorFunc("magenta+")
+	Info.Printf(magenta("%v ▶ info ******* \n"), time.Now())
+	ticker := time.NewTicker(interval)
+	go func() {
+		for {
+			select {
+			case <-ticker.C:
+				fetch(subreddit, popularity)
+			}
+		}
+	}()
 }

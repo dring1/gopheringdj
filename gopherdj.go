@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"net/http"
+	"time"
 
 	"os"
 
@@ -32,12 +33,15 @@ func main() {
 
 	n := negroni.Classic()
 	n.UseHandler(r)
-	fmt.Printf("Listening on port: %s: ", PORT)
-	http.ListenAndServe(":"+PORT, n)
+	fmt.Printf("Listening on port: %s\n ", PORT)
 
 	// At this point the init from DB has been called and bolt instantiated
 	// we remeber to defer the close
 	defer lib.DB.Close()
+
+	// begin polling the database?
+	lib.ContinuousPoll("Music", "new", time.Minute)
+	http.ListenAndServe(":"+PORT, n)
 }
 
 func Hello(w http.ResponseWriter, req *http.Request) {

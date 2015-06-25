@@ -2,7 +2,6 @@ package lib
 
 import (
 	"encoding/json"
-	"fmt"
 	"log"
 	"time"
 
@@ -10,8 +9,9 @@ import (
 )
 
 var (
-	db_name = []byte("gopheringdj")
-	DB      *bolt.DB
+	db_name    = []byte("gopheringdj")
+	DB         *bolt.DB
+	bucketName = time.Now().String()
 )
 
 func init() {
@@ -24,23 +24,34 @@ func init() {
 	// defer db.Close()
 }
 
-func InsertNewEntry(subs []*Submission) (string, error) {
-	bucketName := []byte(time.Now().String())
+func setupTimer() {
+	ticker := time.NewTicker(24 * time.Hour)
+	quit := make(chan struct{})
+	go func() {
+		for {
+			select {
+			case <-ticker.C:
+				bucketName = time.Now().String()
+			case <-quit:
+				ticker.Stop()
+				return
+			}
+		}
+	}()
+}
+
+func InsertNewSubmissions(subs []*Submission) (string, error) {
 	err := DB.Update(func(tx *bolt.Tx) error {
-		b, err := tx.CreateBucketIfNotExists(bucketName)
+		b, err := tx.CreateBucketIfNotExists([]byte(bucketName))
 		if err != nil {
 			return err
 		}
-		fmt.Printf("%v", b)
-
-		// b := tx.Bucket(bucketName)
 		for _, sub := range subs {
-			fmt.Printf("%v\n", sub)
 			s, err := json.Marshal(sub)
 			if err != nil {
 				return err
 			}
-			err = b.Put([]byte("hi"), s)
+			err = b.Put([]byte(sub.ID), s)
 			if err != nil {
 				return err
 			}
@@ -51,5 +62,13 @@ func InsertNewEntry(subs []*Submission) (string, error) {
 	if err != nil {
 		log.Fatal(err)
 	}
-	return "bucketName", nil
+	return bucketName, nil
+}
+
+func GetTodaysHits() {
+
+}
+
+func ViewAll() {
+	// paginate the responses
 }

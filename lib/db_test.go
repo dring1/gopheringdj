@@ -27,7 +27,7 @@ func Test_SingleDBInsert(t *testing.T) {
 
 		a := assert.New(t)
 
-		timestamp, err := InsertNewEntry(singleSubs)
+		timestamp, err := InsertNewSubmissions(singleSubs)
 		a.NoError(err)
 		a.IsType(*new(string), timestamp)
 	})
