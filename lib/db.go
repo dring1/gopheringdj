@@ -3,15 +3,19 @@ package lib
 import (
 	"encoding/json"
 	"log"
+	"os"
 	"time"
 
 	"github.com/boltdb/bolt"
+	"github.com/mgutz/ansi"
 )
 
 var (
 	db_name    = []byte("gopheringdj")
 	DB         *bolt.DB
 	bucketName = time.Now().String()
+	DBInfo     *log.Logger
+	Red        = ansi.ColorFunc("red+")
 )
 
 func init() {
@@ -21,10 +25,12 @@ func init() {
 	if err != nil {
 		log.Fatal(err)
 	}
+	DBInfo = log.New(os.Stdout, Red("[DB]: "), log.Ldate|log.Ltime)
 	// defer db.Close()
 }
 
-func setupTimer() {
+func SetupTimer() {
+	DBInfo.Printf(Red("DB Interval Timer Initialized"))
 	ticker := time.NewTicker(24 * time.Hour)
 	quit := make(chan struct{})
 	go func() {

@@ -13,12 +13,13 @@ import (
 )
 
 var (
-	AllowedDomains = [...]string{"youtube.com", "youtu.be", "soundcloud.com"}
-	Info           *log.Logger
+	AllowedDomains = [...]string{"youtube.com", "youtu.be", "m.youtube.com", "soundcloud.com"}
+	info           *log.Logger
+	Magenta        = ansi.ColorFunc("magenta+")
 )
 
 func init() {
-	Info = log.New(os.Stdout, "INFO: ", log.Ldate|log.Ltime|log.Lshortfile)
+	info = log.New(os.Stdout, Magenta("[Reddit]: "), log.Ldate|log.Ltime)
 }
 
 const (
@@ -55,43 +56,56 @@ type Submission struct {
 
 type Options map[string]string
 
-func GetSubReddit(subReddit string, popularity string, opt Options) ([]*Submission, error) {
+type RecurringReddit struct {
+	SubReddit string
+	Domain    string
+	Query     string
+	Interval  time.Duration
+}
+
+func (r RecurringReddit) GetSubReddit(opt Options) ([]*Submission, error) {
 	// handle timeout
-	url := BuildURL(subReddit, popularity, opt)
+	url := r.BuildURL(opt)
 	res, err := http.Get(url)
 	if err != nil {
 		return nil, err
 	}
 	defer res.Body.Close()
 
-	r := new(Response)
-	err = json.NewDecoder(res.Body).Decode(r)
+	response := new(Response)
+	err = json.NewDecoder(res.Body).Decode(response)
 
 	if err != nil {
 		return nil, err
 	}
 
-	submissions := make([]*Submission, len(r.Data.Children))
-	for i, child := range r.Data.Children {
+	submissions := make([]*Submission, len(response.Data.Children))
+	for i, child := range response.Data.Children {
 		submissions[i] = child.Sub
 	}
 	return submissions, nil
 }
 
-func BuildURL(subReddit string, popularity string, opt Options) string {
+func (r RecurringReddit) BuildURL(opt Options) string {
 	var url string
 	if opt == nil {
 		opt = Options{
 			"limit": "100",
 		}
 	}
-	url = fmt.Sprintf("%s/r/%s/%s.json", BASE, subReddit, popularity)
-	var params string
-	for k, v := range opt {
-		params = strings.Join([]string{fmt.Sprintf("%s=%s", k, v), params}, "&")
+	url = fmt.Sprintf("%s/r/%s/%s.json", BASE, r.SubReddit, r.Domain)
+
+	if r.Query != "" {
+		url = fmt.Sprintf("%s?%s", url, r.Query)
 	}
-	params = strings.TrimRight(params, "&")
-	url = url + "?" + params
+
+	var options string
+	for k, v := range opt {
+		options = strings.Join([]string{fmt.Sprintf("%s=%s", k, v), options}, "&")
+	}
+	options = strings.TrimRight(options, "&")
+	url = url + "&" + options
+
 	return url
 }
 
@@ -113,7 +127,7 @@ func (s *Submission) ValidDomain() bool {
 	}
 
 	for _, domain := range AllowedDomains {
-
+		fmt.Printf("%s", s.Domain)
 		if s.Domain == domain {
 			valid = true
 			break
@@ -122,10 +136,9 @@ func (s *Submission) ValidDomain() bool {
 	return valid
 }
 
-func fetch(subreddit string, popularity string) error {
-	magenta := ansi.ColorFunc("magenta+")
-	Info.Println(magenta("%v ▶ info ******* \n"), time.Now())
-	submissions, err := GetSubReddit(subreddit, popularity, nil)
+func (r RecurringReddit) fetch() error {
+	info.Printf(Magenta("Fetching /r/%s/%s.json"), r.SubReddit, r.Domain)
+	submissions, err := r.GetSubReddit(nil)
 	if err != nil {
 		return err
 	}
@@ -138,15 +151,13 @@ func fetch(subreddit string, popularity string) error {
 	return nil
 }
 
-func ContinuousPoll(subreddit string, popularity string, interval time.Duration) {
-	magenta := ansi.ColorFunc("magenta+")
-	Info.Printf(magenta("%v ▶ info ******* \n"), time.Now())
-	ticker := time.NewTicker(interval)
+func (r RecurringReddit) ContinuousPoll() {
+	ticker := time.NewTicker(r.Interval)
 	go func() {
 		for {
 			select {
 			case <-ticker.C:
-				fetch(subreddit, popularity)
+				r.fetch()
 			}
 		}
 	}()

@@ -7,10 +7,8 @@ import (
 
 	"os"
 
-	"github.com/codegangsta/negroni"
-	_ "github.com/darkhelmet/twitterstream"
 	"github.com/dring1/gopheringdj/lib"
-	"github.com/gorilla/mux"
+	"github.com/zenazn/goji"
 )
 
 // phae 1
@@ -19,29 +17,30 @@ import (
 // serve client
 // client makes websocket connections
 
-var PORT string
+var (
+	port   string
+	reddit *lib.RecurringReddit
+)
 
 func init() {
-	if PORT = os.Getenv("DJPORT"); PORT == "" {
-		PORT = "8080"
+	if port = os.Getenv("DJPORT"); port == "" {
+		port = "8080"
 	}
+
+	reddit = &lib.RecurringReddit{SubReddit: "Music", Domain: "search", Query: "sort=new&restrict_sr=on&q=flair%3Amusic%2Bstreaming", Interval: 10 * time.Second}
 }
 
 func main() {
-	r := mux.NewRouter()
-	r.HandleFunc("/", Hello)
-
-	n := negroni.Classic()
-	n.UseHandler(r)
-	fmt.Printf("Listening on port: %s\n ", PORT)
-
 	// At this point the init from DB has been called and bolt instantiated
 	// we remeber to defer the close
+	lib.SetupTimer()
 	defer lib.DB.Close()
 
 	// begin polling the database?
-	lib.ContinuousPoll("Music", "new", time.Minute)
-	http.ListenAndServe(":"+PORT, n)
+
+	go reddit.ContinuousPoll()
+	goji.Get("/static", Hello)
+	goji.Serve()
 }
 
 func Hello(w http.ResponseWriter, req *http.Request) {
