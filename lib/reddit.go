@@ -127,7 +127,6 @@ func (s *Submission) ValidDomain() bool {
 	}
 
 	for _, domain := range AllowedDomains {
-		fmt.Printf("%s", s.Domain)
 		if s.Domain == domain {
 			valid = true
 			break

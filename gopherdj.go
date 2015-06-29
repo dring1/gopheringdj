@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"net/http"
 	"time"
@@ -40,9 +41,22 @@ func main() {
 
 	go reddit.ContinuousPoll()
 	goji.Get("/static", Hello)
+	goji.Get("/current", current)
 	goji.Serve()
 }
 
 func Hello(w http.ResponseWriter, req *http.Request) {
 	fmt.Fprintf(w, "%s", req.Method)
+}
+
+func current(w http.ResponseWriter, req *http.Request) {
+	subs, err := lib.GetCurrent()
+	if err != nil {
+		fmt.Printf("%v", err)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	js, err := json.Marshal(subs)
+	w.Header().Set("Content-Type", "application/json")
+	w.Write(js)
 }
