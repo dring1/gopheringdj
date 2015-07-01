@@ -28,7 +28,7 @@ func init() {
 		port = "8080"
 	}
 
-	reddit = &lib.RecurringReddit{SubReddit: "Music", Domain: "search", Query: "sort=new&restrict_sr=on&q=flair%3Amusic%2Bstreaming", Interval: 10 * time.Second}
+	reddit = &lib.RecurringReddit{SubReddit: "Music", Domain: "search", Query: "sort=new&restrict_sr=on&q=flair%3Amusic%2Bstreaming", Interval: time.Hour}
 }
 
 func main() {
@@ -40,13 +40,8 @@ func main() {
 	// begin polling the database?
 
 	go reddit.ContinuousPoll()
-	goji.Get("/static", Hello)
 	goji.Get("/current", current)
 	goji.Serve()
-}
-
-func Hello(w http.ResponseWriter, req *http.Request) {
-	fmt.Fprintf(w, "%s", req.Method)
 }
 
 func current(w http.ResponseWriter, req *http.Request) {

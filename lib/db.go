@@ -81,6 +81,10 @@ func InsertNewSubmissions(subs []*Submission) (string, error) {
 }
 
 func GetCurrent() ([]Submission, error) {
+	// Needs caching
+	// Completely new Bucket
+	// Or current bucket, just more
+
 	err := DB.View(func(tx *bolt.Tx) error {
 		b := tx.Bucket([]byte(bucketName))
 		// m := b.Get([]byte)
@@ -88,8 +92,6 @@ func GetCurrent() ([]Submission, error) {
 		c := b.Cursor()
 
 		for k, v := c.First(); k != nil; k, v = c.Next() {
-
-			// fmt.Printf("key=%s, value=%s\n", k, v)
 			s := Submission{}
 			err := json.Unmarshal(v, &s)
 			if err != nil {

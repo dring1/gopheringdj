@@ -1,0 +1,13 @@
+{
+  "name": "client",
+  "app_id": "",
+  "gulpStartupTasks": [
+    "babel",
+    "sass",
+    "watch"
+  ],
+  "watchPatterns": [
+    "www/**/*",
+    "!www/lib/**/*"
+  ]
+}
