@@ -4,7 +4,8 @@
   "gulpStartupTasks": [
     "babel",
     "sass",
-    "watch"
+    "watch",
+    "injector"
   ],
   "watchPatterns": [
     "www/**/*",

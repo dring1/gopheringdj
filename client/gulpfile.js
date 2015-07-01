@@ -9,10 +9,12 @@ var sh = require('shelljs');
 var inject = require('gulp-inject');
 var babel = require("gulp-babel");
 var plumber = require("gulp-plumber");
+var wiredep = require('wiredep').stream;
 
 var paths = {
 	es6: ['./src/es6/**/*.js'],
-	sass: ['./scss/**/*.scss']
+	sass: ['./scss/**/*.scss'],
+  files: ['./www/**/*.js', './www/**/*.css']
 };
 
 gulp.task('default', ['babel', 'sass', 'injector']);
@@ -27,6 +29,7 @@ gulp.task("babel", function() {
 gulp.task('watch', function() {
 	gulp.watch(paths.es6, ['babel']);
 	gulp.watch(paths.sass, ['sass']);
+  gulp.watch(paths.files, ['injector']);
 });
 
 gulp.task('default', ['sass']);
@@ -66,13 +69,19 @@ gulp.task('injector', function() {
 			relative: true
 		}))
 		.pipe(gulp.dest('./www'));
-})
+});
 
 gulp.task('install', ['git-check'], function() {
 	return bower.commands.install()
 		.on('log', function(data) {
 			gutil.log('bower', gutil.colors.cyan(data.id), data.message);
 		});
+});
+
+gulp.task('bower', function () {
+  gulp.src('./www/index.html')
+    .pipe(wiredep())
+    .pipe(gulp.dest('./www'));
 });
 
 gulp.task('git-check', function(done) {
