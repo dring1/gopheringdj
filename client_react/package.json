@@ -1,0 +1,33 @@
+{
+  "name": "react-init",
+  "version": "1.0.0",
+  "description": "Webpack-React-Bootstrapper",
+  "main": "app/Main.js",
+  "devDependencies": {
+    "babel-core": "^5.6.15",
+    "babel-eslint": "^3.1.23",
+    "babel-loader": "^5.3.1",
+    "css-loader": "^0.15.1",
+    "file-loader": "^0.8.4",
+    "jshint": "^2.8.0",
+    "jshint-loader": "^0.8.3",
+    "node-libs-browser": "^0.5.2",
+    "style-loader": "^0.12.3",
+    "url-loader": "^0.5.6",
+    "webpack": "^1.10.1",
+    "webpack-dev-server": "^1.10.1"
+  },
+  "dependencies": {
+    "eslint": "^0.24.0",
+    "eslint-loader": "^0.14.1",
+    "eslint-plugin-react": "^2.6.4",
+    "react": "^0.13.3",
+    "react-router": "^0.13.3"
+  },
+  "scripts": {
+    "dev": "webpack-dev-server --devtool eval --hot --progress --colors --content-base public",
+    "deploy": "NODE_ENV=production webpack -p"
+  },
+  "author": "Devon Ring",
+  "license": "MIT"
+}
