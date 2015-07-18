@@ -2,7 +2,6 @@ package lib
 
 import (
 	"encoding/json"
-	"fmt"
 	"log"
 	"os"
 	"time"
@@ -97,7 +96,6 @@ func GetCurrent() ([]Submission, error) {
 			if err != nil {
 				return err
 			}
-			fmt.Printf("\n%+v\n", cache)
 			cache = append(cache, s)
 		}
 		return nil
