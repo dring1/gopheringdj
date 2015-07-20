@@ -13,7 +13,7 @@ import (
 )
 
 var (
-	AllowedDomains = [...]string{"youtube.com", "youtu.be", "m.youtube.com", "soundcloud.com"}
+	AllowedDomains = [...]string{"youtube.com", "youtu.be", "m.youtube.com"}
 	info           *log.Logger
 	Magenta        = ansi.ColorFunc("magenta+")
 )

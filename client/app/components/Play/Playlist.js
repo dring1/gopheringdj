@@ -12,19 +12,20 @@ class Playlist extends React . Component {
   constructor( props ) {
     super( props );
     this.state = {
-      date: {}
+      date: {},
+      list: []
     };
   }
   render() {
-    var playlist = this.props.playlist.map( (song, i) => {
+    var playlist = this.props.list.map( (song, index) => {
 
       var component;
 
 
-      if ( i === 0 ) {
-        component = <Playing/>;
+      if ( index === 0 ) {
+        component = <Playing key={index}/>;
       } else {
-        component = <ListItem primaryText={song.title} />;
+        component = <ListItem primaryText={song.title} key={index} />;
       }
       return (component)
     } );
@@ -45,7 +46,7 @@ class Playlist extends React . Component {
     muiTheme: React.PropTypes.object.isRequired,
   }
   static propTypes = {
-    playlist: React.PropTypes.array.isRequired,
+    list: React.PropTypes.array.isRequired,
   }
 }
 

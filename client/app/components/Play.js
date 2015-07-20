@@ -9,27 +9,26 @@ injectTapEventPlugin();
 
 class Play extends React.Component {
   constructor(props){
-    console.log(props)
     super(props);
     this.state = {
-      dj: new DjFetcher( 'localhost:9015', 'websocket' ),
+      list: []
     };
   }
   render() {
     return (
-      <div></div>
+      <Playlist list={this.state.list}/>
     )
   }
   // Move this to playing route
   init() {
     let date =  this.router.getCurrentParams().date === undefined ?
       'current' : this.router.getCurrentParams().date;
-    this.state.dj.connect().addHandlers();
-    // this.Dj.getCurrent()
-    //   .then((dataObj) => {
-    //     console.log(dataObj);
-    //     this.setState({playlist: dataObj.data});
-    //   })
+    this.dj = new DjFetcher( this.context.url, this.context.websocket )
+    this.dj.connect().addHandlers();
+    this.dj.getCurrent()
+      .then((dataObj) => {
+        this.setState({list: dataObj.data});
+      })
   }
   componentWillMount(){
     this.router = this.context.router;
@@ -39,13 +38,14 @@ class Play extends React.Component {
   }
   componentWillUnmount(){
     console.log(this)
-    this.state.dj.close();
+    this.dj.close();
   }
 
   static contextTypes = {
-    router: React.PropTypes.func.isRequired
+    router: React.PropTypes.func.isRequired,
+    url: React.PropTypes.string.isRequired,
+    websocket: React.PropTypes.string.isRequired,
   }
-
 }
 
 export default Play;

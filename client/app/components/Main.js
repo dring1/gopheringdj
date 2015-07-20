@@ -15,16 +15,22 @@ class Main extends React.Component {
     return (
     <div>
       <AppBar title="GopheringDj"> <DatePicker className="center" defaultDate={new Date()}/> </AppBar>
-      <RouteHandler {...this.props}/>
+      <RouteHandler {...this.props} />
     </div>
     )
   }
   // Move this to playing route
   getChildContext() {
-    return { muiTheme: ThemeManager.getCurrentTheme() };
+    return {
+      muiTheme: ThemeManager.getCurrentTheme(),
+      url: 'localhost:9015',
+      websocket: 'websocket'
+    };
   }
   static childContextTypes = {
     muiTheme: React.PropTypes.object.isRequired,
+    url: React.PropTypes.string.isRequired,
+    websocket: React.PropTypes.string.isRequired,
   }
 }
 

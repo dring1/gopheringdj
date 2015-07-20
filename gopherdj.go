@@ -26,8 +26,7 @@ var (
 	upgrader = websocket.Upgrader{
 		ReadBufferSize:  1024,
 		WriteBufferSize: 1024,
-		CheckOrigin:     func(r *http.Request) bool { return true },
-	}
+		CheckOrigin:     func(r *http.Request) bool { return true }}
 )
 
 type Message struct {
@@ -51,8 +50,11 @@ func main() {
 
 	// begin polling the database?
 	go reddit.ContinuousPoll()
+
+	goji.Use(Headers)
 	goji.Get("/current", current)
 	goji.Get("/websocket", wsHandler)
+	// goji.Get("/socket.io/", sockets)
 	goji.Serve()
 }
 
@@ -81,4 +83,13 @@ func wsHandler(res http.ResponseWriter, req *http.Request) {
 		log.Println(err)
 		return
 	}
+}
+
+func Headers(h http.Handler) http.Handler {
+	fn := func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Access-Control-Allow-Origin", "http://localhost:8080")
+		w.Header().Set("Access-Control-Allow-Credentials", "true")
+		h.ServeHTTP(w, r)
+	}
+	return http.HandlerFunc(fn)
 }
