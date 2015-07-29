@@ -2,7 +2,6 @@ package main
 
 import (
 	"encoding/json"
-	"fmt"
 	"log"
 	"net/http"
 	"time"
@@ -21,9 +20,10 @@ import (
 // client makes websocket connections
 
 var (
-	port     string
-	reddit   *lib.RecurringReddit
-	upgrader = websocket.Upgrader{
+	port         string
+	clientOrigin string
+	reddit       *lib.RecurringReddit
+	upgrader     = websocket.Upgrader{
 		ReadBufferSize:  1024,
 		WriteBufferSize: 1024,
 		CheckOrigin:     func(r *http.Request) bool { return true }}
@@ -38,8 +38,10 @@ func init() {
 	if port = os.Getenv("DJPORT"); port == "" {
 		port = "8080"
 	}
-
-	reddit = &lib.RecurringReddit{SubReddit: "Music", Domain: "search", Query: "sort=new&restrict_sr=on&q=flair%3Amusic%2Bstreaming", Interval: 60 * time.Second}
+	if clientOrigin = os.Getenv("GOPHERINGDJ_URL"); clientOrigin == "" {
+		clientOrigin = "http://localhost:8080"
+	}
+	reddit = &lib.RecurringReddit{SubReddit: "Music", Domain: "search", Query: "sort=new&restrict_sr=on&q=flair%3Amusic%2Bstreaming", Interval: 5 * time.Second}
 }
 
 func main() {
@@ -61,7 +63,6 @@ func main() {
 func current(w http.ResponseWriter, req *http.Request) {
 	subs, err := lib.GetCurrent()
 	if err != nil {
-		fmt.Printf("%v", err)
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
@@ -85,9 +86,10 @@ func wsHandler(res http.ResponseWriter, req *http.Request) {
 	}
 }
 
+// Middlware for CORS
 func Headers(h http.Handler) http.Handler {
 	fn := func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Set("Access-Control-Allow-Origin", "http://localhost:8080")
+		w.Header().Set("Access-Control-Allow-Origin", clientOrigin)
 		w.Header().Set("Access-Control-Allow-Credentials", "true")
 		h.ServeHTTP(w, r)
 	}

@@ -13,19 +13,17 @@ class Playlist extends React . Component {
     super( props );
     this.state = {
       date: {},
-      list: []
+      list: [],
+      playing: 0
     };
   }
   render() {
     var playlist = this.props.list.map( (song, index) => {
-
       var component;
-
-
-      if ( index === 0 ) {
-        component = <Playing key={index}/>;
+      if ( index === this.state.playing ) {
+        component = <Playing key={index} metadata={list[index]}/>;
       } else {
-        component = <ListItem primaryText={song.title} key={index} />;
+        component = <ListItem primaryText={song.title} key={index} onClick={this.handleSongClick.bind(this, index)} />;
       }
       return (component)
     } );
@@ -37,6 +35,10 @@ class Playlist extends React . Component {
           < ListDivider />
     </div>
     )
+  }
+
+  handleSongClick(index){
+    this.setState({playing: index});
   }
 
   getChildContext() {

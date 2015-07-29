@@ -8,7 +8,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-var reddit = RecurringReddit{"Music", "search", "sort=new&restrict_sr=on&q=flair%3Amusic%2Bstreaming", time.Minute}
+var reddit = RecurringReddit{"Music", "search", "sort=new&restrict_sr=on&q=flair%3Amusic%2Bstreaming", time.Minute, nil}
 
 func Test_BuildURLWithOptions(t *testing.T) {
 	Convey("Given some params build the expected url", t, func() {
@@ -56,6 +56,25 @@ func Test_FilterResults(t *testing.T) {
 		data, err := reddit.GetSubReddit(nil)
 
 		filteredLinks := FilterLinksByAllowedDomain(data)
+		for _, sub := range filteredLinks {
+			if !sub.ValidDomain() {
+				t.Errorf("Did not match any supported domains: %v, received: %s", AllowedDomains, sub.Domain)
+			}
+		}
+		a.NoError(err)
+		a.NotEmpty(data)
+	})
+}
+
+func Test_AfterIndex(t *testing.T) {
+	Convey("Given a query it should contain an after parameter", t, func() {
+		a := assert.New(t)
+		data, err := reddit.GetSubReddit(nil)
+		a.NotNil(reddit.After)
+		lastID := data[len(data)-1].ID
+		reddit.BuildURL(nil)
+		r
+		// filteredLinks := FilterLinksByAllowedDomain(data)
 		for _, sub := range filteredLinks {
 			if !sub.ValidDomain() {
 				t.Errorf("Did not match any supported domains: %v, received: %s", AllowedDomains, sub.Domain)

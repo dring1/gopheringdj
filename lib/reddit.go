@@ -55,17 +55,20 @@ type Submission struct {
 }
 
 type Options map[string]string
+type ID string
 
 type RecurringReddit struct {
 	SubReddit string
 	Domain    string
 	Query     string
 	Interval  time.Duration
+	Before    string
 }
 
-func (r RecurringReddit) GetSubReddit(opt Options) ([]*Submission, error) {
+func (r *RecurringReddit) GetSubReddit(opt Options) ([]*Submission, error) {
 	// handle timeout
 	url := r.BuildURL(opt)
+	log.Println(url)
 	res, err := http.Get(url)
 	if err != nil {
 		return nil, err
@@ -83,10 +86,16 @@ func (r RecurringReddit) GetSubReddit(opt Options) ([]*Submission, error) {
 	for i, child := range response.Data.Children {
 		submissions[i] = child.Sub
 	}
+	// log.Printf("Before set:  %v\n", r)
+	if len(submissions) > 0 {
+		r.Before = submissions[0].ID
+	}
+	// log.Printf("Before set:  %v\n", r)
+	log.Println(len(submissions))
 	return submissions, nil
 }
 
-func (r RecurringReddit) BuildURL(opt Options) string {
+func (r *RecurringReddit) BuildURL(opt Options) string {
 	var url string
 	if opt == nil {
 		opt = Options{
@@ -94,7 +103,8 @@ func (r RecurringReddit) BuildURL(opt Options) string {
 		}
 	}
 	url = fmt.Sprintf("%s/r/%s/%s.json", BASE, r.SubReddit, r.Domain)
-
+	opt["before"] = "t3_" + r.Before
+	log.Printf("r.Before: %s", r.Before)
 	if r.Query != "" {
 		url = fmt.Sprintf("%s?%s", url, r.Query)
 	}
@@ -135,7 +145,7 @@ func (s *Submission) ValidDomain() bool {
 	return valid
 }
 
-func (r RecurringReddit) fetch() error {
+func (r *RecurringReddit) fetch() error {
 	info.Printf(Magenta("Fetching /r/%s/%s.json"), r.SubReddit, r.Domain)
 	submissions, err := r.GetSubReddit(nil)
 	if err != nil {
@@ -150,7 +160,7 @@ func (r RecurringReddit) fetch() error {
 	return nil
 }
 
-func (r RecurringReddit) ContinuousPoll() {
+func (r *RecurringReddit) ContinuousPoll() {
 	ticker := time.NewTicker(r.Interval)
 	go func() {
 		for {

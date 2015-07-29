@@ -4,6 +4,9 @@ import YouTube from 'react-youtube';
 class Playing extends React . Component {
 
   render() {
+    // var data = this.props.
+    // console.log('data', data);
+    console.log(this.props)
     const opts = {
       height: '390',
       width: '640',
