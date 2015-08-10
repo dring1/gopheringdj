@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"log"
 	"net/http"
+	"sync"
 	"time"
 
 	"os"
@@ -13,26 +14,30 @@ import (
 	"github.com/zenazn/goji"
 )
 
-// phae 1
-// ping reddit on 60 minute intervals
-// parse json data - key store based on time - update every hour
-// serve client
-// client makes websocket connections
+type Message struct {
+	Type string      `json:"type"`
+	Data interface{} `json:"data"`
+}
+
+type CurrentPlayList struct {
+	mutex           sync.Mutex
+	currentPlayList []*lib.Submission
+	updateCurrent   chan *lib.Submission
+}
 
 var (
 	port         string
 	clientOrigin string
 	reddit       *lib.RecurringReddit
-	upgrader     = websocket.Upgrader{
+	db           *lib.Database
+	playlist     = CurrentPlayList{
+		updateCurrent: make(chan *lib.Submission),
+	}
+	upgrader = websocket.Upgrader{
 		ReadBufferSize:  1024,
 		WriteBufferSize: 1024,
 		CheckOrigin:     func(r *http.Request) bool { return true }}
 )
-
-type Message struct {
-	Type string      `json:"type"`
-	Data interface{} `json:"data"`
-}
 
 func init() {
 	if port = os.Getenv("DJPORT"); port == "" {
@@ -41,32 +46,33 @@ func init() {
 	if clientOrigin = os.Getenv("GOPHERINGDJ_URL"); clientOrigin == "" {
 		clientOrigin = "http://localhost:8080"
 	}
-	reddit = &lib.RecurringReddit{SubReddit: "Music", Domain: "search", Query: "sort=new&restrict_sr=on&q=flair%3Amusic%2Bstreaming", Interval: 5 * time.Second}
+	db = lib.NewDB("gopheringdj")
+	reddit = lib.NewReddit("Music", "search", "sort=new&restrict_sr=on&q=flair%3Amusic%2Bstreaming", 5*time.Second, db)
+
 }
 
 func main() {
 	// At this point the init from DB has been called and bolt instantiated
 	// we remeber to defer the close
-	lib.SetupTimer()
-	defer lib.DB.Close()
+	clear := db.SetupTimer()
+	defer db.DB.Close()
 
-	// begin polling the database?
-	go reddit.ContinuousPoll()
+	go reddit.ContinuousPoll(playlist.updateCurrent)
+	go playlist.controlCurrentList(clear)
+	go playlist.updateList()
 
 	goji.Use(Headers)
-	goji.Get("/current", current)
+	goji.Get("/current", getCurrent)
 	goji.Get("/websocket", wsHandler)
-	// goji.Get("/socket.io/", sockets)
 	goji.Serve()
 }
 
-func current(w http.ResponseWriter, req *http.Request) {
-	subs, err := lib.GetCurrent()
+func getCurrent(w http.ResponseWriter, req *http.Request) {
+	js, err := json.Marshal(playlist.currentPlayList)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	js, err := json.Marshal(subs)
 	w.Header().Set("Content-Type", "application/json")
 	w.Write(js)
 }
@@ -77,9 +83,9 @@ func wsHandler(res http.ResponseWriter, req *http.Request) {
 		log.Println(err)
 		return
 	}
-	log.Println("Upgraded")
-	subs, err := lib.GetCurrent()
-	err = conn.WriteJSON(Message{Type: "Welcome", Data: subs})
+	log.Println("Upgraded connection")
+	// subs, err := lib.GetCurrent()
+	err = conn.WriteJSON(Message{Type: "Welcome"})
 	if err != nil {
 		log.Println(err)
 		return
@@ -94,4 +100,48 @@ func Headers(h http.Handler) http.Handler {
 		h.ServeHTTP(w, r)
 	}
 	return http.HandlerFunc(fn)
+}
+
+func (p *CurrentPlayList) updateList() {
+	// p.mutex.Lock()
+	// defer p.mutex.Unlock()
+	go func() {
+		for submission := range p.updateCurrent {
+
+			p.currentPlayList = append(p.currentPlayList, submission)
+			// log.Printf("Updated list %v", submission)
+			// notify all connections of new song
+			// return
+			// log.Println("Done updating list")
+		}
+	}()
+
+}
+
+func (p *CurrentPlayList) controlCurrentList(c <-chan time.Time) {
+	// go func(playlist *CurrentPlayList) {
+
+	go func() {
+		for {
+			select {
+			case <-c:
+				// p.mutex.Lock()
+				// defer p.mutex.Unlock()
+				log.Printf("Received Bucket update. Current size: %d", len(p.currentPlayList))
+
+				p.currentPlayList = make([]*lib.Submission, 0)
+				log.Printf("Resetting current playlist: %d", len(p.currentPlayList))
+
+				// p.mutex.Lock()
+				// defer playlist.mutex.Unlock()
+				// playlist.currentPlayList = make([]*lib.Submission)
+				// default:
+				// 	log.Println("got something")
+			}
+
+			// close(playlist.notify)
+		}
+	}()
+
+	// }(p)
 }

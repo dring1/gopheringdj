@@ -10,53 +10,67 @@ import (
 	"github.com/mgutz/ansi"
 )
 
-// type DataBase struct {
-// 	*bolt.DB
-// 	dbName     []byte
-// 	bucketName string
-// 	cache      []*Submission
-// }
+type Database struct {
+	dbName     []byte
+	DB         *bolt.DB
+	bucketName string
+	DBInfo     *log.Logger
+	notify     chan struct{}
+}
 
 var (
-	dbName     = []byte("gopheringdj")
-	DB         *bolt.DB
-	bucketName = time.Now().String()
-	DBInfo     *log.Logger
-	Red        = ansi.ColorFunc("red+")
-	cache      []Submission
+	Red = ansi.ColorFunc("red+")
 )
+
+func NewDB(name string) *Database {
+	db, err := bolt.Open("bolt.db", 0644, nil)
+	if err != nil {
+		log.Panic(err)
+		return nil
+	}
+	return &Database{
+		dbName:     []byte(name),
+		DB:         db,
+		bucketName: time.Now().String(),
+		DBInfo:     log.New(os.Stdout, Red("[DB]: "), log.Ldate|log.Ltime),
+	}
+}
 
 func init() {
 	// move to main function
-	var err error
-	DB, err = bolt.Open("bolt.db", 0644, nil)
-	if err != nil {
-		log.Fatal(err)
-	}
-	DBInfo = log.New(os.Stdout, Red("[DB]: "), log.Ldate|log.Ltime)
+	// var err error
+	// DB, err = bolt.Open("bolt.db", 0644, nil)
+	// if err != nil {
+	// 	log.Fatal(err)
+	// }
+	// DBInfo = log.New(os.Stdout, Red("[DB]: "), log.Ldate|log.Ltime)
 	// defer db.Close()
 }
 
-func SetupTimer() {
-	DBInfo.Printf(Red("DB Interval Timer Initialized"))
-	ticker := time.NewTicker(24 * time.Hour)
+func (db *Database) SetupTimer() <-chan time.Time {
+	db.DBInfo.Printf(Red("DB Interval Timer Initialized"))
+	ticker := time.NewTicker(5 * time.Second)
 	quit := make(chan struct{})
 	go func() {
 		for {
 			select {
 			case <-ticker.C:
-				bucketName = time.Now().String()
+				db.bucketName = time.Now().String()
+				db.DBInfo.Printf(Red("Interval Ticked: New Bucket: %s"), db.bucketName)
+				// db.notify <- struct{}{}
 			case <-quit:
+				log.Println("Stopping ticker")
 				ticker.Stop()
 				return
 			}
 		}
 	}()
+	return ticker.C
 }
 
-func InsertNewSubmissions(subs []*Submission) (string, error) {
-	err := DB.Update(func(tx *bolt.Tx) error {
-		b, err := tx.CreateBucketIfNotExists([]byte(bucketName))
+func (db *Database) InsertNewSubmissions(subs []*Submission) (string, error) {
+	err := db.DB.Update(func(tx *bolt.Tx) error {
+		b, err := tx.CreateBucketIfNotExists([]byte(db.bucketName))
 		if err != nil {
 			return err
 		}
@@ -76,16 +90,16 @@ func InsertNewSubmissions(subs []*Submission) (string, error) {
 	if err != nil {
 		log.Fatal(err)
 	}
-	return bucketName, nil
+	return db.bucketName, nil
 }
 
-func GetCurrent() ([]Submission, error) {
+func (db Database) GetCurrent() ([]Submission, error) {
 	// Needs caching
 	// Completely new Bucket
 	// Or current bucket, just more
-
-	err := DB.View(func(tx *bolt.Tx) error {
-		b := tx.Bucket([]byte(bucketName))
+	curr := []Submission{}
+	err := db.DB.View(func(tx *bolt.Tx) error {
+		b := tx.Bucket([]byte(db.bucketName))
 		// m := b.Get([]byte)
 		// b.Stats().
 		c := b.Cursor()
@@ -96,14 +110,14 @@ func GetCurrent() ([]Submission, error) {
 			if err != nil {
 				return err
 			}
-			cache = append(cache, s)
+			// cache = append(cache, s)
 		}
 		return nil
 	})
 	if err != nil {
 		return nil, err
 	}
-	return cache, nil
+	return curr, nil
 }
 
 func ViewAll() {

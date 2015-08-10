@@ -12,6 +12,14 @@ import (
 	"github.com/mgutz/ansi"
 )
 
+type Response struct {
+	Data struct {
+		Children []struct {
+			Sub *Submission `json:"data"`
+		} `json:"children"`
+	} `json:"data"`
+}
+
 var (
 	AllowedDomains = [...]string{"youtube.com", "youtu.be", "m.youtube.com"}
 	info           *log.Logger
@@ -25,14 +33,6 @@ func init() {
 const (
 	BASE = "https://www.reddit.com"
 )
-
-type Response struct {
-	Data struct {
-		Children []struct {
-			Sub *Submission `json:"data"`
-		} `json:"children"`
-	} `json:"data"`
-}
 
 type Submission struct {
 	Author       string  `json:"author"`
@@ -63,12 +63,24 @@ type RecurringReddit struct {
 	Query     string
 	Interval  time.Duration
 	Before    string
+	db        *Database
+}
+
+func NewReddit(subreddit string, domain string, query string, dur time.Duration, d *Database) *RecurringReddit {
+	return &RecurringReddit{
+		SubReddit: subreddit,
+		Domain:    domain,
+		Query:     query,
+		Interval:  dur,
+		Before:    "",
+		db:        d,
+	}
 }
 
 func (r *RecurringReddit) GetSubReddit(opt Options) ([]*Submission, error) {
 	// handle timeout
 	url := r.BuildURL(opt)
-	log.Println(url)
+	// log.Println(url)
 	res, err := http.Get(url)
 	if err != nil {
 		return nil, err
@@ -91,7 +103,7 @@ func (r *RecurringReddit) GetSubReddit(opt Options) ([]*Submission, error) {
 		r.Before = submissions[0].ID
 	}
 	// log.Printf("Before set:  %v\n", r)
-	log.Println(len(submissions))
+	// log.Println(len(submissions))
 	return submissions, nil
 }
 
@@ -104,7 +116,7 @@ func (r *RecurringReddit) BuildURL(opt Options) string {
 	}
 	url = fmt.Sprintf("%s/r/%s/%s.json", BASE, r.SubReddit, r.Domain)
 	opt["before"] = "t3_" + r.Before
-	log.Printf("r.Before: %s", r.Before)
+	// log.Printf("r.Before: %s", r.Before)
 	if r.Query != "" {
 		url = fmt.Sprintf("%s?%s", url, r.Query)
 	}
@@ -145,7 +157,7 @@ func (s *Submission) ValidDomain() bool {
 	return valid
 }
 
-func (r *RecurringReddit) fetch() error {
+func (r *RecurringReddit) fetch(c chan *Submission) error {
 	info.Printf(Magenta("Fetching /r/%s/%s.json"), r.SubReddit, r.Domain)
 	submissions, err := r.GetSubReddit(nil)
 	if err != nil {
@@ -153,20 +165,25 @@ func (r *RecurringReddit) fetch() error {
 	}
 
 	filteredSubs := FilterLinksByAllowedDomain(submissions)
-	_, err = InsertNewSubmissions(filteredSubs)
+	_, err = r.db.InsertNewSubmissions(filteredSubs)
 	if err != nil {
 		return err
+	}
+	log.Printf("Filtered submissions from %d to %d", len(submissions), len(filteredSubs))
+	for _, sub := range filteredSubs {
+
+		c <- sub
 	}
 	return nil
 }
 
-func (r *RecurringReddit) ContinuousPoll() {
+func (r *RecurringReddit) ContinuousPoll(c chan *Submission) {
 	ticker := time.NewTicker(r.Interval)
 	go func() {
 		for {
 			select {
 			case <-ticker.C:
-				r.fetch()
+				r.fetch(c)
 			}
 		}
 	}()
