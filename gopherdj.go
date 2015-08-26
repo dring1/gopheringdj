@@ -51,7 +51,7 @@ func init() {
 		clientOrigin = "http://localhost:8080"
 	}
 	db = lib.NewDB("gopheringdj")
-	reddit = lib.NewReddit("Music", "search", "sort=new&restrict_sr=on&q=flair%3Amusic%2Bstreaming", 5*time.Second, db)
+	reddit = lib.NewReddit("Music", "search", "sort=new&restrict_sr=on&q=flair%3Amusic%2Bstreaming", 1*time.Minute, db)
 
 }
 

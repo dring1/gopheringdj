@@ -27,7 +27,7 @@ class Play extends React.Component {
     this.dj.connect().addHandlers();
     this.dj.getCurrent()
       .then((dataObj) => {
-        console.log(dataObj.data)
+        console.log(dataObj)
         this.setState({list: dataObj.data});
       })
   }

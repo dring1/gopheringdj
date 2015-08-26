@@ -2,10 +2,16 @@ import React from 'react';
 import YouTube from 'react-youtube';
 
 class Playing extends React . Component {
-
+  constructor(props){
+    super(props);
+    this.state = {
+      key: "",
+      metadata: {}
+    };
+  }
   render() {
-    // var data = this.props.
-    // console.log('data', data);
+    var data = this.props.metadata
+    console.log('data', data);
     console.log(this.props)
     const opts = {
       height: '390',
@@ -16,7 +22,7 @@ class Playing extends React . Component {
     };
 
     return (
-    <YouTube url={ 'http://www.youtube.com/watch?v=2g811Eo7K8U'}
+    <YouTube url={ data.url }
              opts={opts}
              onPlay={this._onPlay} />
     );
@@ -25,6 +31,11 @@ class Playing extends React . Component {
   _onPlay( event ) {
     // access to player in all event handlers via event.target
     // event.target.pauseVideo();
+  }
+
+  static propTypes = {
+    key: React.PropTypes.number.isRequired,
+    metadata: React.PropTypes.object.isRequired
   }
 }
 

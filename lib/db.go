@@ -49,7 +49,7 @@ func init() {
 
 func (db *Database) SetupTimer() <-chan time.Time {
 	db.DBInfo.Printf(Red("DB Interval Timer Initialized"))
-	ticker := time.NewTicker(5 * time.Second)
+	ticker := time.NewTicker(24 * time.Hour)
 	quit := make(chan struct{})
 	go func() {
 		for {

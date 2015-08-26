@@ -20,8 +20,8 @@ class Playlist extends React . Component {
   render() {
     var playlist = this.props.list.map( (song, index) => {
       var component;
-      if ( index === this.state.playing ) {
-        component = <Playing key={index} metadata={list[index]}/>;
+      if ( index === this.state.playing) {
+        component = <Playing key={index} metadata={this.props.list[index]}/>;
       } else {
         component = <ListItem primaryText={song.title} key={index} onClick={this.handleSongClick.bind(this, index)} />;
       }
@@ -32,7 +32,7 @@ class Playlist extends React . Component {
       < List>
         {playlist}
         < /List>
-          < ListDivider />
+        < ListDivider />
     </div>
     )
   }
