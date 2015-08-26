@@ -3,6 +3,8 @@
 *.a
 *.so
 
+gopheringdj
+
 # Folders
 _obj
 _test

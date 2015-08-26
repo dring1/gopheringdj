@@ -25,6 +25,10 @@ type CurrentPlayList struct {
 	updateCurrent   chan *lib.Submission
 }
 
+const (
+	CURRENT_PLAYLIST_LIMIT = 500
+)
+
 var (
 	port         string
 	clientOrigin string
@@ -57,9 +61,8 @@ func main() {
 	clear := db.SetupTimer()
 	defer db.DB.Close()
 
+	go playlist.playlistListener(clear)
 	go reddit.ContinuousPoll(playlist.updateCurrent)
-	go playlist.controlCurrentList(clear)
-	go playlist.updateList()
 
 	goji.Use(Headers)
 	goji.Get("/current", getCurrent)
@@ -102,46 +105,23 @@ func Headers(h http.Handler) http.Handler {
 	return http.HandlerFunc(fn)
 }
 
-func (p *CurrentPlayList) updateList() {
-	// p.mutex.Lock()
-	// defer p.mutex.Unlock()
-	go func() {
-		for submission := range p.updateCurrent {
-
-			p.currentPlayList = append(p.currentPlayList, submission)
-			// log.Printf("Updated list %v", submission)
-			// notify all connections of new song
-			// return
-			// log.Println("Done updating list")
-		}
-	}()
-
-}
-
-func (p *CurrentPlayList) controlCurrentList(c <-chan time.Time) {
-	// go func(playlist *CurrentPlayList) {
-
+func (p *CurrentPlayList) playlistListener(ticker <-chan time.Time) {
 	go func() {
 		for {
 			select {
-			case <-c:
-				// p.mutex.Lock()
-				// defer p.mutex.Unlock()
-				log.Printf("Received Bucket update. Current size: %d", len(p.currentPlayList))
+			case newSubmission := <-p.updateCurrent:
+				// Current playlist is
+				if len(p.currentPlayList) >= CURRENT_PLAYLIST_LIMIT {
+					p.currentPlayList = make([]*lib.Submission, 0)
+				}
 
+				p.currentPlayList = append(p.currentPlayList, newSubmission)
+			case <-ticker:
+				log.Printf("Received Bucket update. Current size: %d", len(p.currentPlayList))
 				p.currentPlayList = make([]*lib.Submission, 0)
 				log.Printf("Resetting current playlist: %d", len(p.currentPlayList))
-
-				// p.mutex.Lock()
-				// defer playlist.mutex.Unlock()
-				// playlist.currentPlayList = make([]*lib.Submission)
-				// default:
-				// 	log.Println("got something")
 			}
 
-			// close(playlist.notify)
 		}
 	}()
-
-	// }(p)
 }
