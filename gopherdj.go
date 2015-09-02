@@ -10,14 +10,8 @@ import (
 	"os"
 
 	"github.com/dring1/gopheringdj/lib"
-	"github.com/gorilla/websocket"
 	"github.com/zenazn/goji"
 )
-
-type Message struct {
-	Type string      `json:"type"`
-	Data interface{} `json:"data"`
-}
 
 type CurrentPlayList struct {
 	mutex           sync.Mutex
@@ -37,10 +31,6 @@ var (
 	playlist     = CurrentPlayList{
 		updateCurrent: make(chan *lib.Submission),
 	}
-	upgrader = websocket.Upgrader{
-		ReadBufferSize:  1024,
-		WriteBufferSize: 1024,
-		CheckOrigin:     func(r *http.Request) bool { return true }}
 )
 
 func init() {
@@ -51,8 +41,8 @@ func init() {
 		clientOrigin = "http://localhost:8080"
 	}
 	db = lib.NewDB("gopheringdj")
-	reddit = lib.NewReddit("Music", "search", "sort=new&restrict_sr=on&q=flair%3Amusic%2Bstreaming", 1*time.Minute, db)
-
+	reddit = lib.NewReddit("Music", "search", "sort=new&restrict_sr=on&q=flair%3Amusic%2Bstreaming", 5*time.Second, db)
+	go hub.run()
 }
 
 func main() {
@@ -66,7 +56,7 @@ func main() {
 
 	goji.Use(Headers)
 	goji.Get("/current", getCurrent)
-	goji.Get("/websocket", wsHandler)
+	goji.Get("/websocket", serveWs)
 	goji.Serve()
 }
 
@@ -78,21 +68,6 @@ func getCurrent(w http.ResponseWriter, req *http.Request) {
 	}
 	w.Header().Set("Content-Type", "application/json")
 	w.Write(js)
-}
-
-func wsHandler(res http.ResponseWriter, req *http.Request) {
-	conn, err := upgrader.Upgrade(res, req, nil)
-	if err != nil {
-		log.Println(err)
-		return
-	}
-	log.Println("Upgraded connection")
-	// subs, err := lib.GetCurrent()
-	err = conn.WriteJSON(Message{Type: "Welcome"})
-	if err != nil {
-		log.Println(err)
-		return
-	}
 }
 
 // Middlware for CORS
@@ -116,10 +91,12 @@ func (p *CurrentPlayList) playlistListener(ticker <-chan time.Time) {
 				}
 
 				p.currentPlayList = append(p.currentPlayList, newSubmission)
+				hub.BroadcastMessage(&Message{Type: "new_song", Data: newSubmission})
+				log.Println("New Song")
 			case <-ticker:
-				log.Printf("Received Bucket update. Current size: %d", len(p.currentPlayList))
+				log.Printf("Received Bucket Reset. Current size: %d", len(p.currentPlayList))
 				p.currentPlayList = make([]*lib.Submission, 0)
-				log.Printf("Resetting current playlist: %d", len(p.currentPlayList))
+				// log.Printf("Resetting current playlist: %d", len(p.currentPlayList))
 			}
 
 		}
