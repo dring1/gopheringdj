@@ -1,10 +1,11 @@
 import axios from 'axios';
 
 class DjFetcher {
-  constructor(host, route){
+  constructor(host, route, msg_hdlrs){
     this.host = host;
     this.route = route;
     this.ws;
+    this.msg_hdlrs = msg_hdlrs;
   }
 
   connect(){
@@ -22,7 +23,7 @@ class DjFetcher {
     this.ws.onmessage= e => {
       console.log('WebSocket message', e);
       var m = JSON.parse(e.data);
-      DjFetcher.messageHandler(m);
+      this.messageHandler(m);
     }
   }
 
@@ -30,11 +31,13 @@ class DjFetcher {
     return axios({url: `http://${this.host}/current`, withCredentials: false});
   }
 
-  static messageHandler(msg){
+  messageHandler(msg){
+
     switch(msg.type){
-      case 'current.list.update':
+      case 'new_song':
+        this.msg_hdlrs['new_song'](msg.data)
       default:
-        console.log('Unknown Message');
+        console.log('Unknown Message', msg.type);
     }
   }
 

@@ -92,7 +92,7 @@ func (p *CurrentPlayList) playlistListener(ticker <-chan time.Time) {
 
 				p.currentPlayList = append(p.currentPlayList, newSubmission)
 				hub.BroadcastMessage(&Message{Type: "new_song", Data: newSubmission})
-				log.Println("New Song")
+				// log.Println("New Song")
 			case <-ticker:
 				log.Printf("Received Bucket Reset. Current size: %d", len(p.currentPlayList))
 				p.currentPlayList = make([]*lib.Submission, 0)
