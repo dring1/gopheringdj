@@ -32,9 +32,10 @@ class DjFetcher {
   }
 
   messageHandler(msg){
-
+    console.log(msg)
     switch(msg.type){
       case 'new_song':
+        // console.log('A new song msg has been receibed, msg')
         this.msg_hdlrs['new_song'](msg.data)
       default:
         console.log('Unknown Message', msg.type);

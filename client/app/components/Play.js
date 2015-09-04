@@ -24,12 +24,13 @@ class Play extends React.Component {
     let date =  this.router.getCurrentParams().date === undefined ?
       'current' : this.router.getCurrentParams().date;
     var that = this
-    this.dj = new DjFetcher( this.context.url, this.context.websocket, {
+    this.dj = new DjFetcher( this.context.url, this.context.websocket, 
+    {
       new_song: function (song) {
-        console.log(song, that)
+        console.log('CAlled', song, that)
         that.setState({list: that.state.list.concat([song])});
       }
-    } )
+    })
     this.dj.connect().getCurrent()
       .then((dataObj) => {
         console.log(dataObj)
@@ -38,9 +39,6 @@ class Play extends React.Component {
       .then(() => {
         console.log('activating handlers')
         this.dj.addHandlers();
-      })
-      .then(() => {
-        this.dj.messageHandler({type: 'new_song', title: ':qweqweqwe'})
       })
   }
   componentWillMount(){

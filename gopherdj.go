@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/json"
 	"log"
+	"math/rand"
 	"net/http"
 	"sync"
 	"time"
@@ -53,6 +54,7 @@ func main() {
 
 	go playlist.playlistListener(clear)
 	go reddit.ContinuousPoll(playlist.updateCurrent)
+	go playlist.MockNewSongAdd(15 * time.Second)
 
 	goji.Use(Headers)
 	goji.Get("/current", getCurrent)
@@ -101,4 +103,14 @@ func (p *CurrentPlayList) playlistListener(ticker <-chan time.Time) {
 
 		}
 	}()
+}
+
+func (p *CurrentPlayList) MockNewSongAdd(interval time.Duration) {
+	ticker := time.NewTicker(interval)
+	for {
+		select {
+		case <-ticker.C:
+			hub.BroadcastMessage(&Message{Type: "new_song", Data: p.currentPlayList[rand.Intn(len(p.currentPlayList))]})
+		}
+	}
 }

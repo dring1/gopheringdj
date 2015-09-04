@@ -170,6 +170,7 @@ func (r *RecurringReddit) fetch(c chan *Submission) error {
 		return err
 	}
 	log.Printf("Filtered submissions from %d to %d", len(submissions), len(filteredSubs))
+
 	for _, sub := range filteredSubs {
 
 		c <- sub

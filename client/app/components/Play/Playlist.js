@@ -13,7 +13,7 @@ class Playlist extends React . Component {
     super( props );
     this.state = {
       date: {},
-      list: [],
+      // list: [],
       playing: 0
     };
   }
@@ -21,8 +21,10 @@ class Playlist extends React . Component {
     var playlist = this.props.list.map( (song, index) => {
       var component;
       if ( index === this.state.playing) {
+        // console.log(this.props.list[index])
         component = <Playing key={index} metadata={this.props.list[index]}/>;
       } else {
+        // console.log(song)
         component = <ListItem primaryText={song.title} key={index} onClick={this.handleSongClick.bind(this, index)} />;
       }
       return (component)
