@@ -2,20 +2,18 @@ import React from 'react';
 import YouTube from 'react-youtube';
 
 class Playing extends React . Component {
-  constructor(props){
-    super(props);
+  constructor( props ) {
+    super( props );
     this.state = {
       key: "",
       metadata: {}
     };
   }
   render() {
-    var data = this.props.metadata
-    console.log('data', data);
-    console.log(this.props)
+    var data = this.props.metadata;
     const opts = {
-      height: '390',
-      width: '640',
+      height: '39',
+      width: '64',
       playerVars: { // https://developers.google.com/youtube/player_parameters
         autoplay: 1
       }
@@ -23,8 +21,8 @@ class Playing extends React . Component {
 
     return (
     <YouTube url={ data.url }
-             opts={opts}
-             onPlay={this._onPlay} />
+    opts={opts}
+    onPlay={this._onPlay} />
     );
   }
 

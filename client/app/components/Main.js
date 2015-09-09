@@ -10,7 +10,7 @@ let DatePicker = mui.DatePicker;
 
 injectTapEventPlugin();
 
-class Main extends React.Component {
+class Main extends React . Component {
   render() {
     return (
     <div>

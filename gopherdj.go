@@ -106,11 +106,7 @@ func (p *CurrentPlayList) playlistListener(ticker <-chan time.Time) {
 }
 
 func (p *CurrentPlayList) MockNewSongAdd(interval time.Duration) {
-	ticker := time.NewTicker(interval)
-	for {
-		select {
-		case <-ticker.C:
-			hub.BroadcastMessage(&Message{Type: "new_song", Data: p.currentPlayList[rand.Intn(len(p.currentPlayList))]})
-		}
+	for range time.Tick(interval) {
+		hub.BroadcastMessage(&Message{Type: "new_song", Data: p.currentPlayList[rand.Intn(len(p.currentPlayList))]})
 	}
 }
