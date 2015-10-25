@@ -8,14 +8,13 @@ html, body {
 }
 
 .page-wrap{
-  margin-bottom: -100px;
+  margin-bottom: -80px;
   height: 400px;
 }
 .footer {
     position: fixed;
     left: 0;
     bottom: 0;
-    /*height: 65px;*/
     width: 100%;
 }
 
@@ -26,5 +25,10 @@ html, body {
   position: absolute;
   top: 50%;
   left: 50%;
-  transform: translate(-50%, -50%);
+  /*transform: translate(-50%, -50%);*/
+  transform: translate(-89%, -45%);
+}
+
+.center{
+  display:flex;justify-content:center;align-items:center
 }

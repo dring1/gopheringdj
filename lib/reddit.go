@@ -169,7 +169,9 @@ func (r *RecurringReddit) fetch(c chan *Submission) error {
 	if err != nil {
 		return err
 	}
-	log.Printf("Filtered submissions from %d to %d", len(submissions), len(filteredSubs))
+	if len(submissions) > 0 {
+		log.Printf("Filtered submissions from %d to %d", len(submissions), len(filteredSubs))
+	}
 
 	for _, sub := range filteredSubs {
 

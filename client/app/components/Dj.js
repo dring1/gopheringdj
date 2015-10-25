@@ -2,9 +2,8 @@ import React from 'react';
 import mui from 'material-ui';
 import injectTapEventPlugin from 'react-tap-event-plugin';
 import Playlist from './Play/Playlist';
-import Playbar from './Playbar/Playbar';
 import DjFetcher from '../util/GoFetchDj';
-const ThemeManager = new mui.Styles.ThemeManager();
+
 
 injectTapEventPlugin();
 

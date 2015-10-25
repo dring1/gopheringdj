@@ -2,7 +2,6 @@ import React from 'react';
 import mui from 'material-ui';
 import Playing from './Playing';
 import injectTapEventPlugin from 'react-tap-event-plugin';
-const ThemeManager = new mui.Styles.ThemeManager();
 
 let Toolbar = mui.Toolbar,
   ToolbarGroup = mui.ToolbarGroup,
@@ -20,36 +19,45 @@ class Playbar extends React . Component {
   constructor( props ) {
     super( props );
     this.state = {
-      metadata: {}
-    }
+      metadata: {},
+      paused: false
+    };
   }
   render() {
+    console.log('props', this.props)
     return (
     <footer>
-        <Toolbar className="parent">
-          <ToolbarGroup key={0} float="left">
-            <Playing metadata={this.state.metadata}/>
+        <Toolbar className="parent" float="left">
+          <ToolbarGroup key={0}>
+            <IconButton iconClassName="fa fa-chevron-left" onClick={this.previous.bind(this)}/>
           </ToolbarGroup>
           <ToolbarGroup className="child" key={1}>
-            <IconButton iconClassName="fa fa-chevron-left"/>
-            <IconButton iconClassName="fa fa-youtube-play"/>
-            <IconButton iconClassName="fa fa-chevron-right"/>
+            <Playing className="center" metadata={this.props.metadata}/>
+          </ToolbarGroup>
+          <ToolbarGroup key={2} float="right">
+            <IconButton iconClassName="fa fa-chevron-right" onClick={this.forward.bind(this)}/>
           </ToolbarGroup>
         </Toolbar>
       </footer>
     )
   }
-  getChildContext() {
-    return {
-      muiTheme: ThemeManager.getCurrentTheme()
-    };
-  }
-  static childContextTypes = {
-    muiTheme: React.PropTypes.object.isRequired,
-  }
 
   static propTypes = {
-    metadata: React.PropTypes.object.isRequired
+    metadata: React.PropTypes.object.isRequired,
+    index: React.PropTypes.number.isRequired,
+    parentCallback: React.PropTypes.function
+  }
+
+  pause(){
+    this.setState({paused: !this.state.paused});
+  }
+
+  forward(){
+    this.props.parentCallback(++this.props.index);
+  }
+
+  previous(){
+    this.props.parentCallback(--this.props.index);
   }
 }
 

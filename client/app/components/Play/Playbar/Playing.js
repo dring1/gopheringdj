@@ -12,17 +12,25 @@ class Playing extends React . Component {
   render() {
     var data = this.props.metadata;
     const opts = {
-      height: '39',
-      width: '64',
+      height: '54',
+      width: '150',
       playerVars: { // https://developers.google.com/youtube/player_parameters
-        autoplay: 1
+        autoplay: 1,
+        // controls: 0,
       }
+    };
+    if (data === undefined) {
+      return (
+        <div></div>
+      )
     };
 
     return (
     <YouTube url={ data.url }
-    opts={opts}
-    onPlay={this._onPlay} />
+      opts={opts}
+      onPlay={this._onPlay}
+      onError={this._onError}
+      onEnd={this._onEnd} />
     );
   }
 
@@ -31,8 +39,21 @@ class Playing extends React . Component {
     // event.target.pauseVideo();
   }
 
+  _onError( event ) {
+    this.context.onError()
+  }
+
+  _onEnd ( event ) {
+    this.context.onEnd()
+  }
+
+  static contextTypes = {
+    error: React.PropTypes.function,
+    end: React.PropTypes.function,
+  }
+
   static propTypes = {
-    key: React.PropTypes.number.isRequired,
+    // key: React.PropTypes.number.isRequired,
     metadata: React.PropTypes.object.isRequired
   }
 }
