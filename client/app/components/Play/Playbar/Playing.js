@@ -10,6 +10,7 @@ class Playing extends React . Component {
     };
   }
   render() {
+    console.log(this);
     var data = this.props.metadata;
     const opts = {
       height: '54',
@@ -29,8 +30,8 @@ class Playing extends React . Component {
     <YouTube url={ data.url }
       opts={opts}
       onPlay={this._onPlay}
-      onError={this._onError}
-      onEnd={this._onEnd} />
+      onError={this.context.onError}
+      onEnd={this.context.onEnd} />
     );
   }
 
@@ -40,20 +41,22 @@ class Playing extends React . Component {
   }
 
   _onError( event ) {
-    this.context.onError()
+    console.log('context:', this.context);
+    this.context.Error();
   }
 
   _onEnd ( event ) {
-    this.context.onEnd()
+    console.log('context:', this);
+    this.context.onEnd();
   }
 
   static contextTypes = {
-    error: React.PropTypes.function,
-    end: React.PropTypes.function,
+    callback: React.PropTypes.func,
+    onError: React.PropTypes.func,
+    onEnd: React.PropTypes.func,
   }
 
   static propTypes = {
-    // key: React.PropTypes.number.isRequired,
     metadata: React.PropTypes.object.isRequired
   }
 }

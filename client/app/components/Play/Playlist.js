@@ -1,6 +1,6 @@
 import React from 'react';
 import mui from 'material-ui';
-import injectTapEventPlugin from 'react-tap-event-plugin';
+// import injectTapEventPlugin from 'react-tap-event-plugin';
 
 import Playbar from './Playbar/Playbar';
 
@@ -30,6 +30,11 @@ class Playlist extends React . Component {
     } );
 
     console.log('current playing', this.state)
+    if (this.props.list.length === 0 ) {
+      return  (
+        <div></div>
+      )
+    };
     return (
     <div>
       <div className="page-wrap">
@@ -39,7 +44,7 @@ class Playlist extends React . Component {
         < ListDivider />
         </div>
         <div className="footer">
-          <Playbar metadata={this.props.list[this.state.playing]} index={this.state.playing} parentCallback={this.changeSong.bind(this)} />
+          <Playbar metadata={this.props.list[this.state.playing] } index={this.state.playing} parentCallback={this.changeSong.bind(this)} />
         </div>
     </div>
     )
@@ -53,9 +58,9 @@ class Playlist extends React . Component {
       index = this.props.list.length -1;
     };
 
-    // if ( index > (this.state.listLength - 1)) {
-    //   index = 0;
-    // };
+    if ( index > this.props.list.length - 1) {
+      index = 0;
+    };
 
     this.setState( {
       playing: index
@@ -70,33 +75,35 @@ class Playlist extends React . Component {
     if (index === (this.state.listLength - 1 )) {
       index = -1;
     };
-    changeSong(++index);
+    this.changeSong(++index);
   }
 
   onEnd(){
-    // onEnd is identical to on error currently
-    return this.onError;
+    console.log("song ended", this);
+    this.onError()
   }
 
 
-  componentWillReceiveProps(){
-    console.log('didmountLength:', this.props.list.length)
-    this.setState({listLength: this.props.list.length});
-  }
+  // componentWillReceiveProps(){
+  //   console.log('didmountLength:', this.props.list.length)
+  //   this.setState({listLength: this.props.list.length});
+  // }
 
   getChildContext() {
+    console.log('get child context called');
     return {
-      callback: this.changeSong,
-      onError: this.onError,
-      onEnd: this.onEnd,
+      callback: this.changeSong.bind(this),
+      onError: this.onError.bind(this),
+      onEnd: this.onEnd.bind(this),
     };
   }
 
   static childContextTypes = {
-    callback: React.PropTypes.function,
-    onError: React.PropTypes.function,
-    onEnd: React.PropTypes.function,
+    callback: React.PropTypes.func,
+    onError: React.PropTypes.func,
+    onEnd: React.PropTypes.func,
   }
+
   static propTypes = {
     list: React.PropTypes.array.isRequired,
   }

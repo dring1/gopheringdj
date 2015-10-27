@@ -24,7 +24,7 @@ class Playbar extends React . Component {
     };
   }
   render() {
-    console.log('props', this.props)
+    // console.log('props', this.props)
     return (
     <footer>
         <Toolbar className="parent" float="left">
@@ -45,7 +45,7 @@ class Playbar extends React . Component {
   static propTypes = {
     metadata: React.PropTypes.object.isRequired,
     index: React.PropTypes.number.isRequired,
-    parentCallback: React.PropTypes.function
+    parentCallback: React.PropTypes.func
   }
 
   pause(){
