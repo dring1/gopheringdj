@@ -29,7 +29,7 @@ class Playing extends React . Component {
     return (
     <YouTube url={ data.url }
       opts={opts}
-      onPlay={this._onPlay}
+      onPlay={this.context.onPlay}
       onError={this.context.onError}
       onEnd={this.context.onEnd} />
     );
@@ -38,6 +38,7 @@ class Playing extends React . Component {
   _onPlay( event ) {
     // access to player in all event handlers via event.target
     // event.target.pauseVideo();
+    return this.context.onPlay
   }
 
   _onError( event ) {
@@ -54,6 +55,7 @@ class Playing extends React . Component {
     callback: React.PropTypes.func,
     onError: React.PropTypes.func,
     onEnd: React.PropTypes.func,
+    onPlay: React.PropTypes.func,
   }
 
   static propTypes = {

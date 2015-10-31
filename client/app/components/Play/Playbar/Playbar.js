@@ -24,17 +24,21 @@ class Playbar extends React . Component {
     };
   }
   render() {
-    // console.log('props', this.props)
+    var buttonStyle = {
+      position: 'relative',
+      top: '50%',
+      transform: 'translateY(-50%)',
+    }
     return (
     <footer>
         <Toolbar className="parent" float="left">
-          <ToolbarGroup key={0}>
+          <ToolbarGroup style={buttonStyle}  key={0}>
             <IconButton iconClassName="fa fa-chevron-left" onClick={this.previous.bind(this)}/>
           </ToolbarGroup>
           <ToolbarGroup className="child" key={1}>
             <Playing className="center" metadata={this.props.metadata}/>
           </ToolbarGroup>
-          <ToolbarGroup key={2} float="right">
+          <ToolbarGroup style={buttonStyle}  key={2} float="right">
             <IconButton iconClassName="fa fa-chevron-right" onClick={this.forward.bind(this)}/>
           </ToolbarGroup>
         </Toolbar>

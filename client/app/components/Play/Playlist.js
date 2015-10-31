@@ -4,6 +4,8 @@ import mui from 'material-ui';
 
 import Playbar from './Playbar/Playbar';
 
+let ContentInbox = require('material-ui/lib/svg-icons/image/music-note');
+
 
 let List = mui.List,
   ListItem = mui.ListItem,
@@ -20,12 +22,13 @@ class Playlist extends React . Component {
     };
   }
   render() {
+
     var playlist = this.props.list.map( (song, index) => {
       var component;
       if ( index === this.state.playing ) {
         // highlight
       }
-      component = <ListItem primaryText={song.title} key={index} onClick={ this.changeSong.bind( this, index ) } />;
+      component = <ListItem leftIcon={<ContentInbox/>} primaryText={song.title} key={index} onClick={ this.changeSong.bind( this, index ) } />;
       return (component)
     } );
 
@@ -83,6 +86,37 @@ class Playlist extends React . Component {
     this.onError()
   }
 
+  onPlay(){
+    return;
+    if (!("Notification" in window)) {
+      alert("This browser does not support desktop notification");
+    }
+
+    // Let's check whether notification permissions have already been granted
+    else if (Notification.permission === "granted") {
+      console.log(this.state)
+      // If it's okay let's create a notification
+      // var options = {
+      //   body: theBody,
+      //   icon: theIcon
+      // }
+      var notification = new Notification(this.state.current);
+    }
+
+    // Otherwise, we need to ask the user for permission
+    else if (Notification.permission !== 'denied') {
+      Notification.requestPermission(function (permission) {
+        // If the user accepts, let's create a notification
+        if (permission === "granted") {
+          var notification = new Notification("Hi there!");
+        }
+      });
+    }
+
+    // At last, if the user has denied notifications, and you 
+    // want to be respectful there is no need to bother them any more.
+  }
+
 
   // componentWillReceiveProps(){
   //   console.log('didmountLength:', this.props.list.length)
@@ -90,11 +124,11 @@ class Playlist extends React . Component {
   // }
 
   getChildContext() {
-    console.log('get child context called');
     return {
       callback: this.changeSong.bind(this),
       onError: this.onError.bind(this),
       onEnd: this.onEnd.bind(this),
+      onPlay: this.onPlay.bind(this),
     };
   }
 
@@ -102,6 +136,7 @@ class Playlist extends React . Component {
     callback: React.PropTypes.func,
     onError: React.PropTypes.func,
     onEnd: React.PropTypes.func,
+    onPlay: React.PropTypes.func,
   }
 
   static propTypes = {

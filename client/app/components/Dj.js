@@ -26,7 +26,7 @@ class Play extends React . Component {
     var that = this
     this.dj = new DjFetcher( this.context.url, this.context.websocket, {
       new_song: function ( song ) {
-        console.log( 'CAlled', song, that )
+        // console.log( 'CAlled', song, that )
         that.setState( {
           list: that.state.list.concat( [
             song
