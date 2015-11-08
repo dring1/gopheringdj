@@ -4,7 +4,7 @@ import mui from 'material-ui';
 
 import Playbar from './Playbar/Playbar';
 
-let ContentInbox = require('material-ui/lib/svg-icons/image/music-note');
+let MusicNoteIcon = require('material-ui/lib/svg-icons/image/music-note');
 
 
 let List = mui.List,
@@ -18,17 +18,18 @@ class Playlist extends React . Component {
       date: {},
       playing: 0,
       listLength: 0,
-      current: {}
+      current: {},
+      mutex: true,
     };
   }
   render() {
 
     var playlist = this.props.list.map( (song, index) => {
-      var component;
+      var
+        component = <ListItem primaryText={song.title} key={index} onClick={ this.changeSong.bind( this, index ) } />;
       if ( index === this.state.playing ) {
-        // highlight
+        component = <ListItem leftIcon={<MusicNoteIcon/>} primaryText={song.title} key={index} onClick={ this.changeSong.bind( this, index ) } />;
       }
-      component = <ListItem leftIcon={<ContentInbox/>} primaryText={song.title} key={index} onClick={ this.changeSong.bind( this, index ) } />;
       return (component)
     } );
 
@@ -54,9 +55,11 @@ class Playlist extends React . Component {
   }
 
   changeSong( index ) {
-
+    if (this.state.mutex) {
+      console.log("Waiting on youtube");
+      return;
+    };
     console.log('new index', index, 'length', this.state.listLength);
-
     if (index < 0) {
       index = this.props.list.length -1;
     };
@@ -66,6 +69,7 @@ class Playlist extends React . Component {
     };
 
     this.setState( {
+      mutex: true,
       playing: index
     } );
   }
@@ -78,6 +82,7 @@ class Playlist extends React . Component {
     if (index === (this.state.listLength - 1 )) {
       index = -1;
     };
+    this.setState({mutex: false});
     this.changeSong(++index);
   }
 
@@ -87,6 +92,8 @@ class Playlist extends React . Component {
   }
 
   onPlay(){
+    console.log("Mutex off");
+    this.setState({mutex: false});
     return;
     if (!("Notification" in window)) {
       alert("This browser does not support desktop notification");
@@ -117,18 +124,13 @@ class Playlist extends React . Component {
     // want to be respectful there is no need to bother them any more.
   }
 
-
-  // componentWillReceiveProps(){
-  //   console.log('didmountLength:', this.props.list.length)
-  //   this.setState({listLength: this.props.list.length});
-  // }
-
   getChildContext() {
     return {
       callback: this.changeSong.bind(this),
       onError: this.onError.bind(this),
       onEnd: this.onEnd.bind(this),
       onPlay: this.onPlay.bind(this),
+      mutex: this.state.mutex,
     };
   }
 
@@ -137,6 +139,7 @@ class Playlist extends React . Component {
     onError: React.PropTypes.func,
     onEnd: React.PropTypes.func,
     onPlay: React.PropTypes.func,
+    mutex: React.PropTypes.bool,
   }
 
   static propTypes = {

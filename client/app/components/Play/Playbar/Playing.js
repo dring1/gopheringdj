@@ -35,22 +35,6 @@ class Playing extends React . Component {
     );
   }
 
-  _onPlay( event ) {
-    // access to player in all event handlers via event.target
-    // event.target.pauseVideo();
-    return this.context.onPlay
-  }
-
-  _onError( event ) {
-    console.log('context:', this.context);
-    this.context.Error();
-  }
-
-  _onEnd ( event ) {
-    console.log('context:', this);
-    this.context.onEnd();
-  }
-
   static contextTypes = {
     callback: React.PropTypes.func,
     onError: React.PropTypes.func,

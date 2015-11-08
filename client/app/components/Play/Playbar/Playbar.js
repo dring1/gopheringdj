@@ -46,12 +46,6 @@ class Playbar extends React . Component {
     )
   }
 
-  static propTypes = {
-    metadata: React.PropTypes.object.isRequired,
-    index: React.PropTypes.number.isRequired,
-    parentCallback: React.PropTypes.func
-  }
-
   pause(){
     this.setState({paused: !this.state.paused});
   }
@@ -62,6 +56,16 @@ class Playbar extends React . Component {
 
   previous(){
     this.props.parentCallback(--this.props.index);
+  }
+
+  static propTypes = {
+    metadata: React.PropTypes.object.isRequired,
+    index: React.PropTypes.number.isRequired,
+    parentCallback: React.PropTypes.func
+  }
+
+  static contextTypes = {
+    mutex: React.PropTypes.bool
   }
 }
 
