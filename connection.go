@@ -4,7 +4,7 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/gorilla/websocket"
+	"github.com/dring1/gopheringdj/Godeps/_workspace/src/github.com/gorilla/websocket"
 )
 
 var upgrader = websocket.Upgrader{

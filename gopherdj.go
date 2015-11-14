@@ -10,8 +10,8 @@ import (
 
 	"os"
 
+	"github.com/dring1/gopheringdj/Godeps/_workspace/src/github.com/zenazn/goji"
 	"github.com/dring1/gopheringdj/lib"
-	"github.com/zenazn/goji"
 )
 
 type CurrentPlayList struct {

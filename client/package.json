@@ -31,7 +31,8 @@
   },
   "scripts": {
     "dev": "webpack-dev-server --devtool eval --hot --progress --colors --content-base public",
-    "deploy": "NODE_ENV=production webpack -p"
+    "deploy": "NODE_ENV=production webpack -p",
+    "lint": "eslint . --ext .js --ext .jsx || true"
   },
   "author": "Devon Ring",
   "license": "MIT"

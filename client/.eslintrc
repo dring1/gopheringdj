@@ -197,6 +197,7 @@
         "react/sort-comp": [2, { // https://github.com/yannickcr/eslint-plugin-react/blob/master/docs/rules/sort-comp.md
             "order": [
                 "displayName",
+                "constructor",
                 "propTypes",
                 "contextTypes",
                 "childContextTypes",

@@ -15,11 +15,11 @@ module.exports = {
       exclude: /(node_modules|bower_components)/,
       loader: 'babel?stage=0'
     },
-    // {
-    //   test: /\.js$/,
-    //   loader: "eslint-loader",
-    //   exclude: /(node_modules|bower_components)/
-    // },
+    {
+      test: /\.js$/,
+      loader: "eslint-loader",
+      exclude: /(node_modules|bower_components)/
+    },
     {
       test: /\.css$/,
       loader: 'style-loader!css-loader'
