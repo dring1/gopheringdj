@@ -40,7 +40,7 @@ class Play extends React . Component {
     // const date = this.router.getCurrentParams().date === undefined ?
     //   'current' : this.router.getCurrentParams().date;
     this.dj = new DjFetcher( this.context.url, this.context.websocket, {
-      new_song: function( song ) {
+      new_song: (song) => {
         // console.log( 'CAlled', song, that )
         that.setState( {
           list: that.state.list.concat( [

@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 class DjFetcher {
-  constructor( host, route, msgHdlrs ) {
+  constructor(host, route, msgHdlrs) {
     this.host = host;
     this.route = route;
     this.ws = {};
@@ -9,39 +9,39 @@ class DjFetcher {
   }
 
   connect() {
-    this.ws = new WebSocket( `ws://${this.host}/${this.route}` );
+    this.ws = new WebSocket(`ws://${this.host}/${this.route}`);
     return this;
   }
 
   addHandlers() {
-    this.ws.onopen = (e) => {
-      console.log( 'WebSocket Open', e );
+    this.ws.onopen = () => {
+      // console.log( 'WebSocket Open', e );
     };
-    this.ws.onclose = (e) => {
-      console.log( 'WebSocket Close', e );
+    this.ws.onclose = () => {
+      // console.log( 'WebSocket Close', e );
     };
     this.ws.onmessage = (e) => {
       // console.log( 'WebSocket message', e );
-      const m = JSON.parse( e.data );
-      this.messageHandler( m );
+      const m = JSON.parse(e.data);
+      this.messageHandler(m);
     };
   }
 
   getCurrent() {
-    return axios( {
+    return axios({
       url: `http://${this.host}/current`,
       withCredentials: false,
-    } );
+    });
   }
 
-  messageHandler( msg ) {
+  messageHandler(msg) {
     switch (msg.type) {
       case 'new_song':
         // console.log('A new song msg has been receibed, msg')
-        this.messageHandlers.new_song( msg.data );
+        this.messageHandlers.new_song(msg.data);
         break;
       default:
-        // console.log( 'Unknown Message', msg.type );
+    // console.log( 'Unknown Message', msg.type );
     }
   }
 

@@ -45,6 +45,7 @@ class Playing extends React . Component {
       onEnd={this.context.onEnd} />
     );
   }
+
 }
 
 export default Playing;

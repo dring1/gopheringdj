@@ -2,47 +2,46 @@ import React from 'react';
 import mui from 'material-ui';
 import injectTapEventPlugin from 'react-tap-event-plugin';
 import { RouteHandler } from 'react-router';
-var ThemeManager = mui.Styles.ThemeManager;
-var Theme = ThemeManager.getMuiTheme(mui.Styles.LightRawTheme);
-var appPalette = {
-primary1Color: "#e67e22",
-primary2Color: "#e67e22",
-primary3Color: "#A9D2EB",
-accent1Color: "#ED3B3B",
-accent2Color: "#ED2B2B",
-accent3Color: "#F58C8C",
-canvasColor: mui.Styles.Colors.redA100,
-
-  // rest of the palette is set from Theme Manager
+const ThemeManager = mui.Styles.ThemeManager;
+const Theme = ThemeManager.getMuiTheme(mui.Styles.DarkRawTheme);
+const appPalette = {
+  primary1Color: '#FFA000',
+  primary2Color: '#FFC107',
+  primary3Color: '#FFECB3',
+  accent1Color: '#00BCD4',
+  accent2Color: '#00BCD4',
+  accent3Color: '#00BCD4',
+  borderColor: '#B6B6B6',
+  textColor: '#212121',
+  alternateTextColor: '#727272',
+  canvasColor: mui.Styles.Colors.white,
 };
-var newTheme = ThemeManager.modifyRawThemePalette(Theme,appPalette);
-let AppBar = mui.AppBar;
-let IconButton = mui.IconButton;
-let DatePicker = mui.DatePicker;
+const newTheme = ThemeManager.modifyRawThemePalette(Theme, appPalette);
 
 injectTapEventPlugin();
 
 class Main extends React . Component {
-  render() {
-    return (
-    <div>
-      <AppBar title="GopheringDj"> <DatePicker className="center" defaultDate={new Date()}/> </AppBar>
-      <RouteHandler {...this.props} />
-    </div>
-    )
-  }
   // Move this to playing route
-  getChildContext() {
-    return {
-      url: 'localhost:9015',
-      websocket: 'websocket',
-      muiTheme: Theme,
-    };
-  }
   static childContextTypes = {
     url: React.PropTypes.string.isRequired,
     websocket: React.PropTypes.string.isRequired,
     muiTheme: React.PropTypes.object,
+  }
+
+  getChildContext() {
+    return {
+      url: '192.168.99.100:9015',
+      websocket: 'websocket',
+      muiTheme: newTheme,
+    };
+  }
+
+  render() {
+    return (
+    <div>
+      <RouteHandler {...this.props} />
+    </div>
+    );
   }
 }
 

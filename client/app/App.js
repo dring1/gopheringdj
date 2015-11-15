@@ -1,8 +1,8 @@
-require( '../assets/styles/styles.css' );
+require('../assets/styles/styles.css');
 import React from 'react';
 import Router from 'react-router';
 import routes from './config/routes';
 
-Router.run( routes, (Root, state) => {
-  React.render( <Root {...state} />, document.getElementById( 'app' ) );
-} );
+Router.run(routes, (Root, state) => {
+  React.render(<Root {...state} />, document.getElementById('app'));
+});

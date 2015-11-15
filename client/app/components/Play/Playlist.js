@@ -43,7 +43,7 @@ class Playlist extends React . Component {
   }
 
   onChangeSong( index ) {
-    let i = 0;
+    let i = index;
     if (this.state.mutex) {
       // console.log('Waiting on youtube');
       return;
@@ -76,12 +76,12 @@ class Playlist extends React . Component {
   }
 
   onEnd() {
-    console.log('song ended', this);
+    // console.log('song ended', this);
     this.onError();
   }
 
   onPlay() {
-    console.log('Mutex off');
+    // console.log('Mutex off');
     this.setState({mutex: false});
     return;
     // if (!("Notification" in window)) {
@@ -116,12 +116,22 @@ class Playlist extends React . Component {
   render() {
     const playlist = this.props.list.map( (song, index) => {
       let
-        component = <ListItem primaryText={song.title} key={index} onClick={ this.onChangeSong.bind( this, index ) } />;
+        component = (
+          <div>
+            <ListItem primaryText={song.title} key={index} onClick={ this.onChangeSong.bind( this, index ) } />
+            <ListDivider />
+          </div>
+        );
       if ( index === this.state.playing ) {
-        component = <ListItem leftIcon={<MusicNoteIcon/>} primaryText={song.title} key={index} onClick={ this.onChangeSong.bind( this, index ) } />;
+        component = (
+          <div>
+            <ListItem leftIcon={<MusicNoteIcon/>} primaryText={song.title} key={index} onClick={ this.onChangeSong.bind( this, index ) } />
+            <ListDivider inset={true} />
+          </div>
+        );
       }
       return (component);
-    } );
+    });
 
     // console.log('current playing', this.state);
     if ( this.props.list.length === 0 ) {
