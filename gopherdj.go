@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"flag"
 	"log"
 	"math/rand"
 	"net/http"
@@ -36,7 +37,7 @@ var (
 
 func init() {
 	if port = os.Getenv("DJPORT"); port == "" {
-		port = "8080"
+		port = "3000"
 	}
 	if clientOrigin = os.Getenv("GOPHERINGDJ_URL"); clientOrigin == "" {
 		clientOrigin = "http://localhost:8080"
@@ -47,6 +48,7 @@ func init() {
 }
 
 func main() {
+	flag.Set("bind", ":"+port)
 	// At this point the init from DB has been called and bolt instantiated
 	// we remeber to defer the close
 	clear := db.SetupTimer()

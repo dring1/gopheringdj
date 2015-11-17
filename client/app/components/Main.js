@@ -8,13 +8,13 @@ const appPalette = {
   primary1Color: '#FFA000',
   primary2Color: '#FFC107',
   primary3Color: '#FFECB3',
-  accent1Color: '#00BCD4',
-  accent2Color: '#00BCD4',
-  accent3Color: '#00BCD4',
+  accent1Color: '#FFA000',
+  accent2Color: '#FFA000',
+  accent3Color: '#FFA000',
   borderColor: '#B6B6B6',
   textColor: '#212121',
   alternateTextColor: '#727272',
-  canvasColor: mui.Styles.Colors.white,
+  canvasColor: mui.Styles.Colors.amber,
 };
 const newTheme = ThemeManager.modifyRawThemePalette(Theme, appPalette);
 

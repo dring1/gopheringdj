@@ -27,3 +27,7 @@ _testmain.go
 *.db
 
 npm-debug.log
+# Elastic Beanstalk Files
+.elasticbeanstalk/*
+!.elasticbeanstalk/*.cfg.yml
+!.elasticbeanstalk/*.global.yml
