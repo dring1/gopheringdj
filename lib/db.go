@@ -36,17 +36,6 @@ func NewDB(name string) *Database {
 	}
 }
 
-func init() {
-	// move to main function
-	// var err error
-	// DB, err = bolt.Open("bolt.db", 0644, nil)
-	// if err != nil {
-	// 	log.Fatal(err)
-	// }
-	// DBInfo = log.New(os.Stdout, Red("[DB]: "), log.Ldate|log.Ltime)
-	// defer db.Close()
-}
-
 func (db *Database) SetupTimer() <-chan time.Time {
 	db.DBInfo.Printf(Red("DB Interval Timer Initialized"))
 	ticker := time.NewTicker(24 * time.Hour)
