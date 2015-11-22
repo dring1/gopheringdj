@@ -158,7 +158,7 @@ func (s *Submission) ValidDomain() bool {
 }
 
 func (r *RecurringReddit) fetch(c chan *Submission) error {
-	info.Printf(Magenta("Fetching /r/%s/%s.json"), r.SubReddit, r.Domain)
+	// info.Printf(Magenta("Fetching /r/%s/%s.json"), r.SubReddit, r.Domain)
 	submissions, err := r.GetSubReddit(nil)
 	if err != nil {
 		return err

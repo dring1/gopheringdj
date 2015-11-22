@@ -56,7 +56,9 @@ func main() {
 
 	go playlist.playlistListener(clear)
 	go reddit.ContinuousPoll(playlist.updateCurrent)
-	go playlist.MockNewSongAdd(15 * time.Second)
+	if os.Getenv("DEVELOPMENT") != "" {
+		go playlist.MockNewSongAdd(15 * time.Second)
+	}
 
 	goji.Use(Headers)
 	goji.Get("/current", getCurrent)
