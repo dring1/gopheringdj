@@ -10,8 +10,8 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/dring1/gopheringdj/Godeps/_workspace/src/github.com/zenazn/goji/bind"
-	"github.com/dring1/gopheringdj/Godeps/_workspace/src/github.com/zenazn/goji/graceful"
+	"github.com/zenazn/goji/bind"
+	"github.com/zenazn/goji/graceful"
 )
 
 func init() {

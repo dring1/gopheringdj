@@ -1,7 +1,7 @@
 import React from 'react';
 import mui from 'material-ui';
 import injectTapEventPlugin from 'react-tap-event-plugin';
-import { RouteHandler } from 'react-router';
+import Play from './Dj';
 const ThemeManager = mui.Styles.ThemeManager;
 const Theme = ThemeManager.getMuiTheme(mui.Styles.DarkRawTheme);
 const appPalette = {
@@ -30,7 +30,7 @@ class Main extends React . Component {
 
   getChildContext() {
     return {
-      url: '192.168.99.100:9015',
+      url: 'localhost:3000',
       websocket: 'websocket',
       muiTheme: newTheme,
     };
@@ -39,7 +39,7 @@ class Main extends React . Component {
   render() {
     return (
     <div>
-      <RouteHandler {...this.props} />
+      <Play/>
     </div>
     );
   }

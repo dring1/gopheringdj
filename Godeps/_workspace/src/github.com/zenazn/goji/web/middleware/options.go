@@ -4,7 +4,7 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/dring1/gopheringdj/Godeps/_workspace/src/github.com/zenazn/goji/web"
+	"github.com/zenazn/goji/web"
 )
 
 type autoOptionsState int

@@ -6,7 +6,7 @@ import Playbar from './Playbar/Playbar';
 const MusicNoteIcon = require('material-ui/lib/svg-icons/image/music-note');
 const List = mui.List;
 const ListItem = mui.ListItem;
-const ListDivider = mui.ListDivider;
+const ListDivider = mui.Divider;
 
 class Playlist extends React . Component {
   constructor( props ) {
@@ -119,14 +119,12 @@ class Playlist extends React . Component {
         component = (
           <div>
             <ListItem primaryText={song.title} key={index} onClick={ this.onChangeSong.bind( this, index ) } />
-            <ListDivider />
           </div>
         );
       if ( index === this.state.playing ) {
         component = (
           <div>
             <ListItem leftIcon={<MusicNoteIcon/>} primaryText={song.title} key={index} onClick={ this.onChangeSong.bind( this, index ) } />
-            <ListDivider inset={true} />
           </div>
         );
       }

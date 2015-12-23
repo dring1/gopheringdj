@@ -15,10 +15,10 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/dring1/gopheringdj/Godeps/_workspace/src/github.com/zenazn/goji"
-	"github.com/dring1/gopheringdj/Godeps/_workspace/src/github.com/zenazn/goji/web"
-	"github.com/dring1/gopheringdj/Godeps/_workspace/src/github.com/zenazn/goji/web/middleware"
 	"github.com/goji/param"
+	"github.com/zenazn/goji"
+	"github.com/zenazn/goji/web"
+	"github.com/zenazn/goji/web/middleware"
 )
 
 // Note: the code below cuts a lot of corners to make the example app simple.

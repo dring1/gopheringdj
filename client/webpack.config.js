@@ -10,10 +10,14 @@ module.exports = {
     filename: 'bundle.js'
   },
   module: {
-    loaders: [{
+    loaders: [
+    {
       test: /\.js?$/,
       exclude: /(node_modules|bower_components)/,
-      loader: 'babel?stage=0'
+      loader: 'babel',
+      query: {
+        presets: ['react', 'es2015', 'stage-0', 'stage-2']
+      }
     },
     {
       test: /\.js$/,
@@ -23,9 +27,11 @@ module.exports = {
     {
       test: /\.css$/,
       loader: 'style-loader!css-loader'
-    }, {
-      test: /\.(png|woff)$/,
-      loader: 'url-loader?limit=100000'
-    }]
+    },
+     // {
+    //   test: /\.(png|woff)$/,
+    //   loader: 'url-loader?limit=100000'
+    // }
+    ]
   }
 };

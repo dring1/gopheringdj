@@ -13,7 +13,6 @@ class Play extends React . Component {
   }
 
   static contextTypes = {
-    router: React.PropTypes.func.isRequired,
     url: React.PropTypes.string.isRequired,
     websocket: React.PropTypes.string.isRequired,
   }

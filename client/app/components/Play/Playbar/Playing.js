@@ -1,6 +1,15 @@
 import React from 'react';
 import YouTube from 'react-youtube';
 
+function youtubeId(id) {
+  let yId = (id.split('/')).pop();
+  if(yId.includes('watch?v=')){
+    yId = yId.split('watch?v=').pop();
+  }
+  console.log('yId', yId)
+  return yId;
+}
+
 class Playing extends React . Component {
   constructor( props ) {
     super( props );
@@ -36,9 +45,9 @@ class Playing extends React . Component {
         <div></div>
       );
     }
-
     return (
-    <YouTube url={ data.url }
+    <YouTube
+      videoId={youtubeId(data.url)}
       opts={opts}
       onPlay={this.context.onPlay}
       onError={this.context.onError}

@@ -5,7 +5,7 @@ import { Route, DefaultRoute } from 'react-router';
 
 
 export default (
-<Route name="app" path="/" handler={Main}>
-    <DefaultRoute handler={Dj} />
+  <Route name="app" path="/" component={Main}>
+    <DefaultRoute component={Dj} />
   </Route>
 );

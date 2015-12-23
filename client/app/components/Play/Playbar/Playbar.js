@@ -54,11 +54,11 @@ class Playbar extends React . Component {
   }
 
   forward() {
-    this.props.parentCallback(++this.props.index);
+    this.props.parentCallback(this.props.index + 1);
   }
 
   previous() {
-    this.props.parentCallback(--this.props.index);
+    this.props.parentCallback(this.props.index - 1);
   }
 
 

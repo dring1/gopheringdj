@@ -4,8 +4,8 @@ import (
 	"log"
 	"os"
 
-	"github.com/dring1/gopheringdj/Godeps/_workspace/src/github.com/gorilla/websocket"
-	"github.com/dring1/gopheringdj/Godeps/_workspace/src/github.com/mgutz/ansi"
+	"github.com/gorilla/websocket"
+	"github.com/mgutz/ansi"
 )
 
 type Hub struct {

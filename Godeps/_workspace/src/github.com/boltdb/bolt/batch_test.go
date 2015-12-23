@@ -4,7 +4,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/dring1/gopheringdj/Godeps/_workspace/src/github.com/boltdb/bolt"
+	"github.com/boltdb/bolt"
 )
 
 // Ensure two functions can perform updates in a single batch.
