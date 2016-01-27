@@ -1,14 +1,6 @@
 import React from 'react';
 import YouTube from 'react-youtube';
-
-function youtubeId(id) {
-  let yId = (id.split('/')).pop();
-  if(yId.includes('watch?v=')){
-    yId = yId.split('watch?v=').pop();
-  }
-  console.log('yId', yId)
-  return yId;
-}
+import { youtubeId } from '../../../util/youtube';
 
 class Playing extends React . Component {
   constructor( props ) {

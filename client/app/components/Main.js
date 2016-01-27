@@ -2,6 +2,9 @@ import React from 'react';
 import mui from 'material-ui';
 import injectTapEventPlugin from 'react-tap-event-plugin';
 import Play from './Dj';
+import * as DjActions from '../actions/DjActions';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 const ThemeManager = mui.Styles.ThemeManager;
 const Theme = ThemeManager.getMuiTheme(mui.Styles.DarkRawTheme);
 const appPalette = {
@@ -20,8 +23,26 @@ const newTheme = ThemeManager.modifyRawThemePalette(Theme, appPalette);
 
 injectTapEventPlugin();
 
-class Main extends React . Component {
+
+function mapStateToProps(state) {
+  return {
+    songs: state.songs,
+  };
+}
+
+function mapDispatchToProps(dispatch) {
+  return {
+    actions: bindActionCreators(DjActions, dispatch),
+  };
+}
+
+class Main extends React.Component {
   // Move this to playing route
+
+    static propTypes = {
+      songs: React.PropTypes.object.isRequired,
+      actions: React.PropTypes.object.isRequired,
+    }
   static childContextTypes = {
     url: React.PropTypes.string.isRequired,
     websocket: React.PropTypes.string.isRequired,
@@ -29,20 +50,18 @@ class Main extends React . Component {
   }
 
   getChildContext() {
-    return {
-      url: 'localhost:3000',
-      websocket: 'websocket',
-      muiTheme: newTheme,
-    };
+    return {url: 'localhost:3000', websocket: 'websocket', muiTheme: newTheme};
   }
 
   render() {
+    const {songs, actions} = this.props;
     return (
-    <div>
-      <Play/>
-    </div>
+      <div>
+        <Play songs={songs} {...actions}/>
+      </div>
     );
   }
+
 }
 
-export default Main;
+export default connect(mapStateToProps, mapDispatchToProps)(Main);

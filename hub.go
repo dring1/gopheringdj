@@ -34,11 +34,11 @@ var (
 
 func (h *Hub) addConnection(conn *websocket.Conn) {
 	h.connections[conn] = true
-	h.logger.Println("Connection Added")
+	h.logger.Println("Connection Added. Current Connection Count", len(h.connections))
 }
 
 func (h *Hub) removeConnection(conn *websocket.Conn) {
-	h.logger.Println("Connection Removed")
+	h.logger.Println("Connection Removed. Current Connection Count", len(h.connections))
 	delete(h.connections, conn)
 }
 

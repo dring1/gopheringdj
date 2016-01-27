@@ -2,7 +2,7 @@ var path = require('path');
 // http://christianalfoni.github.io/javascript/2014/12/13/did-you-know-webpack-and-react-is-awesome.html
 module.exports = {
   entry: {
-    app: ['webpack/hot/dev-server', './app/App.js']
+    app: ['webpack/hot/dev-server', './app/index']
   },
   output: {
     publicPath: '/',

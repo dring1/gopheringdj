@@ -1,52 +1,43 @@
-import axios from 'axios';
+// import axios from 'axios';
 
 class DjFetcher {
-  constructor(host, route, msgHdlrs) {
+  constructor(host, route, dispatcher) {
     this.host = host;
     this.route = route;
-    this.ws = {};
-    this.messageHandlers = msgHdlrs;
+    this.websocket = new WebSocket(`ws://${this.host}/${this.route}`);
+    this.addWebSocketHandlers(dispatcher);
   }
 
-  connect() {
-    this.ws = new WebSocket(`ws://${this.host}/${this.route}`);
-    return this;
-  }
+  addWebSocketHandlers(dispatcher) {
+    // ['onopen', 'onclose', 'onmessage'].map((i) => {
+    //   this.websocket[i] = (event) => {
+    //     console.log(event);
+    //     dispatcher(JSON.parse(event.type));
+    //   }
+    // });
 
-  addHandlers() {
-    this.ws.onopen = () => {
-      // console.log( 'WebSocket Open', e );
-    };
-    this.ws.onclose = () => {
-      // console.log( 'WebSocket Close', e );
-    };
-    this.ws.onmessage = (e) => {
-      // console.log( 'WebSocket message', e );
-      const m = JSON.parse(e.data);
-      this.messageHandler(m);
+    this.websocket.onmessage = (event) => {
+      const x = {
+        data: JSON.parse(event.data),
+        type: 'MESSAGE',
+      };
+      dispatcher(x);
     };
   }
 
-  getCurrent() {
-    return axios({
-      url: `http://${this.host}/current`,
-      withCredentials: false,
-    });
-  }
-
-  messageHandler(msg) {
-    switch (msg.type) {
-    case 'new_song':
-      // console.log('A new song msg has been receibed, msg')
-      this.messageHandlers.new_song(msg.data);
-      break;
-    default:
-      // console.log( 'Unknown Message', msg.type );
-    }
-  }
+  // messageHandler(msg) {
+  //   switch (msg.type) {
+  //     case 'new_song':
+  //       // console.log('A new song msg has been receibed, msg')
+  //       this.messageHandlers.new_song(msg.data);
+  //       break;
+  //     default:
+  //       console.log( 'Unknown Message', msg.type );
+  //   }
+  // }
 
   close() {
-    this.ws.close();
+    this.websocket.close();
   }
 }
 
