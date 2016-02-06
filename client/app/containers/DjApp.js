@@ -10,6 +10,10 @@ class DjApp extends Component {
     actions: React.PropTypes.object.isRequired,
   }
 
+  componentDidMount() {
+    this.props.actions.connect();
+  }
+
   render() {
     const { songs, actions } = this.props;
     return (

@@ -10,12 +10,17 @@ export default function songs(state = initialState, action) {
   case ActionTypes.ADD_SONG:
     return {
       songs: [
-        action.song,
         ...state.songs,
+        action.song,
       ],
       index: state.index,
     };
   case ActionTypes.NEXT_SONG:
+    // let i = state.index;
+    // if (i > len(state.songs)) {
+    //
+    // }
+
     return state;
   case ActionTypes.PREV_SONG:
     return state;

@@ -24,6 +24,7 @@ const sock = {
           // store.dispatch();
         return;
       case ActionTypes.ConnTypes.CONNECTED:
+        console.log('RECEIVED CONNTECT');
         sock.startWS();
         return;
       default:
@@ -35,6 +36,7 @@ const sock = {
       return;
     }
     sock.ws = new DjFetcher(sock.URL, sock.ROUTE, sock.wsDispatcher);
+    console.log(sock);
   },
 };
 

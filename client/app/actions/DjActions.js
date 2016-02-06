@@ -15,11 +15,25 @@ export function connectError(errorMessage) {
   };
 }
 
-export function addSong(song) {
-  console.log(song);
+export function addSong() {
+  // console.log(song);
   return {
     type: types.DjTypes.ADD_SONG,
-    song,
+    song: {title: 'Poop master flex'},
+  };
+}
+
+export function nextSong() {
+  // console.log(song);
+  return {
+    type: types.DjTypes.PREV_SONG,
+  };
+}
+
+export function prevSong() {
+  // console.log(song);
+  return {
+    type: types.DjTypes.NEXT_SONG,
   };
 }
 
@@ -34,6 +48,7 @@ export function connect() {
       })
       .then((res) => {
         dispatch(connectSuccess(res.data));
+        dispatch({type: types.ConnTypes.CONNECTED});
       })
       .catch((err) => {
         console.log(err);

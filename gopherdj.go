@@ -81,6 +81,7 @@ func getCurrent(w http.ResponseWriter, req *http.Request) {
 // Middlware for CORS
 func Headers(h http.Handler) http.Handler {
 	fn := func(w http.ResponseWriter, r *http.Request) {
+		// w.Header().Set("Access-Control-Allow-Origin", "http://localhost:8081")
 		w.Header().Set("Access-Control-Allow-Origin", clientOrigin)
 		w.Header().Set("Access-Control-Allow-Credentials", "true")
 		h.ServeHTTP(w, r)

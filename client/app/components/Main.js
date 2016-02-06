@@ -2,6 +2,7 @@ import React from 'react';
 import mui from 'material-ui';
 import injectTapEventPlugin from 'react-tap-event-plugin';
 import Play from './Dj';
+import Playbar from './Play/Playbar/Playbar.new';
 import * as DjActions from '../actions/DjActions';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -36,32 +37,65 @@ function mapDispatchToProps(dispatch) {
   };
 }
 
-class Main extends React.Component {
-  // Move this to playing route
-
-    static propTypes = {
-      songs: React.PropTypes.object.isRequired,
-      actions: React.PropTypes.object.isRequired,
-    }
-  static childContextTypes = {
-    url: React.PropTypes.string.isRequired,
-    websocket: React.PropTypes.string.isRequired,
-    muiTheme: React.PropTypes.object,
-  }
-
-  getChildContext() {
-    return {url: 'localhost:3000', websocket: 'websocket', muiTheme: newTheme};
-  }
-
-  render() {
-    const {songs, actions} = this.props;
+const Main = (props) => {
+    console.log(props);
+    const {songs, actions} = props;
+    const playbarHover = {
+      position: 'fixed',
+      bottom: 0,
+      width: '100%',
+    };
+    const listStyle = {
+      marginBottom: '5em',
+    };
     return (
       <div>
-        <Play songs={songs} {...actions}/>
+        <div style={listStyle}>
+          <Play songs={songs} {...actions}/>
+        </div>
+        <div style={playbarHover}>
+          <Playbar />
+        </div>
       </div>
     );
-  }
+};
 
-}
+Main.propTypes = {
+  songs: React.PropTypes.object.isRequired,
+  actions: React.PropTypes.object.isRequired,
+};
+
+Main.childContextTypes = {
+  muiTheme: React.PropTypes.object,
+};
+
+Main.getChildContext = () => { return {muiTheme: newTheme }; };
+
+// class Main extends React.Component {
+//   // Move this to playing route
+//   static propTypes = {
+//     songs: React.PropTypes.object.isRequired,
+//     actions: React.PropTypes.object.isRequired,
+//   }
+//   static childContextTypes = {
+//     url: React.PropTypes.string.isRequired,
+//     websocket: React.PropTypes.string.isRequired,
+//     muiTheme: React.PropTypes.object,
+//   }
+//
+//   getChildContext() {
+//     return {url: 'localhost:3000', websocket: 'websocket', muiTheme: newTheme};
+//   }
+//
+//   render() {
+//     const {songs, actions} = this.props;
+//     return (
+//       <div>
+//         <Play songs={songs} {...actions}/>
+//       </div>
+//     );
+//   }
+//
+// }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Main);

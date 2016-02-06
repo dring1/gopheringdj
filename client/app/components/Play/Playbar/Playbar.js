@@ -33,7 +33,6 @@ class Playbar extends React . Component {
       transform: 'translateY(-50%)',
     };
     return (
-    <footer>
         <Toolbar className="parent" float="left">
           <ToolbarGroup style={buttonStyle} key={0}>
             <IconButton iconClassName="fa fa-chevron-left" onClick={this.previous.bind(this)}/>
@@ -45,7 +44,6 @@ class Playbar extends React . Component {
             <IconButton iconClassName="fa fa-chevron-right" onClick={this.forward.bind(this)}/>
           </ToolbarGroup>
         </Toolbar>
-      </footer>
     );
   }
 
