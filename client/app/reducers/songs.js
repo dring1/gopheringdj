@@ -20,8 +20,14 @@ export default function songs(state = initialState, action) {
     // if (i > len(state.songs)) {
     //
     // }
-
-    return state;
+    // return {
+    //   songs: state.songs,
+    //   index: state.index + 1,
+    // };
+    return {
+      ...state,
+      index: state.index + 1,
+    };
   case ActionTypes.PREV_SONG:
     return state;
   case ActionTypes.JUMP_SONG:

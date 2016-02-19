@@ -7,7 +7,6 @@ const initialState = {
 };
 
 export default function songs(state = initialState, action) {
-  console.log('IAM :', action);
   switch (action.type) {
   case ActionTypes.CONNECTING:
     return {

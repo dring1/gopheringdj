@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import MainSection from '../components/Main';
-import * as DjActions from '../actions/DjActions';
+import Actions from '../actions';
 
 class DjApp extends Component {
   static propTypes = {
@@ -32,7 +32,7 @@ function mapState(state) {
 
 function mapDispatch(dispatch) {
   return {
-    actions: bindActionCreators(DjActions, dispatch),
+    actions: bindActionCreators(Actions, dispatch),
   };
 }
 

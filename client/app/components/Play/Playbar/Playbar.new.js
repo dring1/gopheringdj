@@ -2,9 +2,9 @@ import React from 'react';
 import {connect} from 'react-redux';
 import { bindActionCreators } from 'redux';
 import mui from 'material-ui';
-import Playing from './Playing';
+import Playing from './Playing.new';
 import ControlButton from './ControlButton';
-import * as DjActions from '../../../actions/DjActions';
+import Actions from '../../../actions';
 
 const Toolbar = mui.Toolbar;
 const ToolbarGroup = mui.ToolbarGroup;
@@ -29,7 +29,9 @@ const Playbar = props => {
           <ToolbarGroup style={buttonStyle} key={0}>
             <ControlButton icon="fa fa-chevron-left" action={props.actions.nextSong}/>
           </ToolbarGroup>
-          <ToolbarGroup className="child" key={1}/>
+          <ToolbarGroup className="child" key={1}>
+            <Playing {...props}/>
+          </ToolbarGroup>
           <ToolbarGroup style={buttonStyle} key={2} float="right">
             <ControlButton icon="fa fa-chevron-right" action={props.actions.prevSong}/>
           </ToolbarGroup>
@@ -47,12 +49,14 @@ Playbar.propTypes = {
 };
 
 function mapStateToProps(state) {
-  console.log('this is the state', state);
-  return { song: {title: 'temp'} };
+  if (state.songs.songs.length === 0) {
+    return { song: {} };
+  }
+  return { song: state.songs.songs[state.songs.index] };
 }
 
 function mapDispatchToProps(dispatch) {
-  return { actions: bindActionCreators(DjActions, dispatch) };
+  return { actions: bindActionCreators(Actions, dispatch) };
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Playbar);

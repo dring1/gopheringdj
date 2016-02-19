@@ -4,7 +4,7 @@ import configureStore from './store/configureStore';
 import Root from './containers/Root';
 import * as ActionTypes from './constants';
 import DjFetcher from './util/GoFetchDj';
-import {receiveEvent} from './actions/DjActions';
+import {receiveEvent} from './actions';
 
 
 const store = configureStore();
