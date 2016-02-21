@@ -18,9 +18,10 @@ class DjFetcher {
 
     this.websocket.onmessage = (event) => {
       console.log('event!', event);
+      let parsed = JSON.parse(event.data);
       const x = {
-        data: JSON.parse(event.data),
-        type: 'MESSAGE',
+        data: parsed.data,
+        type: parsed.type,
       };
       dispatcher(x);
     };

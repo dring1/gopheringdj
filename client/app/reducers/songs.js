@@ -7,7 +7,7 @@ const initialState = {
 
 export default function songs(state = initialState, action) {
   switch (action.type) {
-  case ActionTypes.ADD_SONG:
+  case ActionTypes.NEW_SONG:
     return {
       songs: [
         ...state.songs,
@@ -16,22 +16,20 @@ export default function songs(state = initialState, action) {
       index: state.index,
     };
   case ActionTypes.NEXT_SONG:
-    // let i = state.index;
-    // if (i > len(state.songs)) {
-    //
-    // }
-    // return {
-    //   songs: state.songs,
-    //   index: state.index + 1,
-    // };
     return {
       ...state,
-      index: state.index + 1,
+      index: (state.index + 1 > state.songs.length) ? 0 : state.index + 1,
     };
   case ActionTypes.PREV_SONG:
-    return state;
+    return {
+      ...state,
+      index: (state.index - 1 < 0) ? state.songs.length - 1 : state.index - 1,
+    };
   case ActionTypes.JUMP_SONG:
-    return state;
+    return {
+      ...state,
+      index: action.index,
+    };
   case ActionTypes.ADD_LIBRARY:
     return {
       songs: action.songs,

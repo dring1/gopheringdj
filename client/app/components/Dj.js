@@ -8,15 +8,12 @@ injectTapEventPlugin();
 const Play = props => {
   return (
     <div>
-      <button onClick={props.addSong}> Add song </button>
       <Playlist songs={props.songs} />
     </div>
   );
 };
 
 Play.propTypes = {
-  addSong: React.PropTypes.func.isRequired,
-  connect: React.PropTypes.func.isRequired,
   songs: React.PropTypes.object.isRequired,
 };
 

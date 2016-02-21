@@ -43,6 +43,12 @@ export function receiveEvent(event) {
         type: types.DjTypes.ADD_SONG,
         song,
       };
+    case types.DjTypes.NEW_SONG:
+      console.log('NEW song receive event');
+      return {
+        type: types.DjTypes.NEW_SONG,
+        song: event.data,
+      };
     default:
       console.log('DEFAULT');
       return {

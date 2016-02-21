@@ -22,6 +22,13 @@ export function prevSong() {
   };
 }
 
+export function jumpSong(index) {
+  return {
+    type: types.DjTypes.JUMP_SONG,
+    index,
+  };
+}
+
 export function onError() {
   return {
     type: types.DjTypes.NEXT_SONG,

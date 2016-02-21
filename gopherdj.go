@@ -100,7 +100,7 @@ func (p *CurrentPlayList) playlistListener(ticker <-chan time.Time) {
 				}
 
 				p.currentPlayList = append(p.currentPlayList, newSubmission)
-				hub.BroadcastMessage(&Message{Type: "new_song", Data: newSubmission})
+				hub.BroadcastMessage(&Message{Type: "NEW_SONG", Data: newSubmission})
 				// log.Println("New Song")
 			case <-ticker:
 				log.Printf("Received Bucket Reset. Current size: %d", len(p.currentPlayList))
@@ -114,6 +114,6 @@ func (p *CurrentPlayList) playlistListener(ticker <-chan time.Time) {
 
 func (p *CurrentPlayList) MockNewSongAdd(interval time.Duration) {
 	for range time.Tick(interval) {
-		hub.BroadcastMessage(&Message{Type: "new_song", Data: p.currentPlayList[rand.Intn(len(p.currentPlayList))]})
+		hub.BroadcastMessage(&Message{Type: "NEW_SONG", Data: p.currentPlayList[rand.Intn(len(p.currentPlayList))]})
 	}
 }

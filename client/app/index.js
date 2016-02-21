@@ -4,7 +4,7 @@ import configureStore from './store/configureStore';
 import Root from './containers/Root';
 import * as ActionTypes from './constants';
 import DjFetcher from './util/GoFetchDj';
-import {receiveEvent} from './actions';
+import Actions from './actions';
 
 
 const store = configureStore();
@@ -15,7 +15,7 @@ const sock = {
   ROUTE: 'websocket',
   wsDispatcher: (msg) => {
     // const { session } = redux.getState();
-    return store.dispatch(receiveEvent(msg));
+    return store.dispatch(Actions.receiveEvent(msg));
   },
   wsListener: () => {
     const {lastAction} = store.getState();
