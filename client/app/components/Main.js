@@ -6,6 +6,7 @@ import Playbar from './Play/Playbar/Playbar.new';
 import Actions from '../actions';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
+require('../../assets/styles/styles.css');
 const ThemeManager = mui.Styles.ThemeManager;
 const Theme = ThemeManager.getMuiTheme(mui.Styles.DarkRawTheme);
 

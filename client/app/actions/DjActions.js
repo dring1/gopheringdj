@@ -11,14 +11,14 @@ export function addSong() {
 export function nextSong() {
   // console.log(song);
   return {
-    type: types.DjTypes.PREV_SONG,
+    type: types.DjTypes.NEXT_SONG,
   };
 }
 
 export function prevSong() {
   // console.log(song);
   return {
-    type: types.DjTypes.NEXT_SONG,
+    type: types.DjTypes.PREV_SONG,
   };
 }
 
@@ -43,6 +43,6 @@ export function onPlay() {
 
 export function onEnd() {
   return {
-    type: types.DjTypes.PAUSED_SONG,
+    type: types.DjTypes.NEXT_SONG,
   };
 }

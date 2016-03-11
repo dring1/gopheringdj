@@ -3,7 +3,6 @@ import YouTube from 'react-youtube';
 import { youtubeId } from '../../../util/youtube';
 
 const Playing = props => {
-  console.log('playing props', props);
   const options = {
     height: '54',
     width: '170',
@@ -16,7 +15,7 @@ const Playing = props => {
       <div></div>
     );
   }
-    const x = youtubeId(props.song.url)
+  const x = youtubeId(props.song.url);
   return (
     <YouTube
       videoId={x}

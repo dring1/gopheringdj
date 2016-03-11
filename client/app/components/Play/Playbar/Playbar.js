@@ -27,6 +27,11 @@ class Playbar extends React . Component {
   }
 
   render() {
+    const centerStyle = {
+      display: flex,
+      justifyContent: center,
+      alignItems: center,
+    };
     const buttonStyle = {
       position: 'relative',
       top: '50%',
@@ -37,7 +42,7 @@ class Playbar extends React . Component {
           <ToolbarGroup style={buttonStyle} key={0}>
             <IconButton iconClassName="fa fa-chevron-left" onClick={this.previous.bind(this)}/>
           </ToolbarGroup>
-          <ToolbarGroup className="child" key={1}>
+          <ToolbarGroup style={centerStyle} className="child" key={1}>
             <Playing className="center" metadata={this.props.metadata}/>
           </ToolbarGroup>
           <ToolbarGroup style={buttonStyle} key={2} float="right">

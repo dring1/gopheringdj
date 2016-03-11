@@ -18,6 +18,11 @@ const Playbar = props => {
       transform: 'translateY(-50%)',
     };
 
+    // const centerStyle = {
+    //   display: 'flex',
+    //   'justify-content': 'center',
+    //   'align-items': 'center',
+    // };
     const footerStyle = {
       position: 'fixed',
       left: 0,
@@ -27,13 +32,13 @@ const Playbar = props => {
       <div className={footerStyle}>
         <Toolbar className="parent" float="left">
           <ToolbarGroup style={buttonStyle} key={0}>
-            <ControlButton icon="fa fa-chevron-left" action={props.actions.nextSong}/>
+            <ControlButton icon="fa fa-chevron-left" action={props.actions.prevSong}/>
           </ToolbarGroup>
-          <ToolbarGroup className="child" key={1}>
-            <Playing {...props}/>
+          <ToolbarGroup  className="child" key={1}>
+            <Playing className="center"{...props}/>
           </ToolbarGroup>
           <ToolbarGroup style={buttonStyle} key={2} float="right">
-            <ControlButton icon="fa fa-chevron-right" action={props.actions.prevSong}/>
+            <ControlButton icon="fa fa-chevron-right" action={props.actions.nextSong}/>
           </ToolbarGroup>
         </Toolbar>
       </div>

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Provider } from 'react-redux';
 import DjApp from './DjApp';
-import DevTools from './DevTools';
+import showDevTools from './showDevTools';
 
 export default class Root extends Component {
   static propTypes = {
@@ -14,7 +14,7 @@ export default class Root extends Component {
       <Provider store={store}>
         <div>
           <DjApp />
-          <DevTools />
+          {showDevTools(store)}
         </div>
       </Provider>
     );
