@@ -12,7 +12,9 @@ import (
 	"os"
 
 	"github.com/dring1/gopheringdj/lib"
+	"github.com/dring1/orm/models"
 	"github.com/hypebeast/gojistatic"
+	"github.com/jinzhu/gorm"
 	"github.com/zenazn/goji"
 )
 
@@ -30,8 +32,8 @@ var (
 	port         string
 	clientOrigin string
 	reddit       *lib.RecurringReddit
-	db           *lib.Database
-	playlist     = CurrentPlayList{
+	// db           *lib.Database
+	playlist = CurrentPlayList{
 		updateCurrent: make(chan *lib.Submission),
 	}
 )
@@ -43,7 +45,11 @@ func init() {
 	if clientOrigin = os.Getenv("GOPHERINGDJ_URL"); clientOrigin == "" {
 		clientOrigin = "http://localhost:8080"
 	}
-	db = lib.NewDB("gopheringdj")
+	db, err := gorm.Open("postgres", "user=postgres sslmode=disable ")
+	if err != nil {
+		log.Fatal(err)
+	}
+	db.AutoMigrate(&model.Song{})
 	reddit = lib.NewReddit("Music", "search", "sort=new&restrict_sr=on&q=flair%3Amusic%2Bstreaming", 5*time.Second, db)
 	go hub.run()
 }

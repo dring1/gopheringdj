@@ -73,14 +73,12 @@ func NewReddit(subreddit string, domain string, query string, dur time.Duration,
 		Query:     query,
 		Interval:  dur,
 		Before:    "",
-		db:        d,
 	}
 }
 
 func (r *RecurringReddit) GetSubReddit(opt Options) ([]*Submission, error) {
 	// handle timeout
 	url := r.BuildURL(opt)
-	// log.Println(url)
 	res, err := http.Get(url)
 	if err != nil {
 		return nil, err
@@ -98,12 +96,9 @@ func (r *RecurringReddit) GetSubReddit(opt Options) ([]*Submission, error) {
 	for i, child := range response.Data.Children {
 		submissions[i] = child.Sub
 	}
-	// log.Printf("Before set:  %v\n", r)
 	if len(submissions) > 0 {
 		r.Before = submissions[0].ID
 	}
-	// log.Printf("Before set:  %v\n", r)
-	// log.Println(len(submissions))
 	return submissions, nil
 }
 
@@ -116,7 +111,6 @@ func (r *RecurringReddit) BuildURL(opt Options) string {
 	}
 	url = fmt.Sprintf("%s/r/%s/%s.json", BASE, r.SubReddit, r.Domain)
 	opt["before"] = "t3_" + r.Before
-	// log.Printf("r.Before: %s", r.Before)
 	if r.Query != "" {
 		url = fmt.Sprintf("%s?%s", url, r.Query)
 	}
@@ -158,7 +152,6 @@ func (s *Submission) ValidDomain() bool {
 }
 
 func (r *RecurringReddit) fetch(c chan *Submission) error {
-	// info.Printf(Magenta("Fetching /r/%s/%s.json"), r.SubReddit, r.Domain)
 	submissions, err := r.GetSubReddit(nil)
 	if err != nil {
 		return err
@@ -174,7 +167,6 @@ func (r *RecurringReddit) fetch(c chan *Submission) error {
 	}
 
 	for _, sub := range filteredSubs {
-
 		c <- sub
 	}
 	return nil
